@@ -1,0 +1,601 @@
+﻿/* ============================================================
+   StudySync — Profile Setup Wizard Stylesheet
+   ============================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --indigo: #3D3BF3;
+    --indigo-dark: #2d2bc0;
+    --teal: #1abc9c;
+    --text-dark: #1a1a2e;
+    --text-mid: #555577;
+    --text-light: #8888aa;
+    --bg: #f4f4f8;
+    --white: #ffffff;
+    --error: #e74c3c;
+    --border: #ddddf0;
+    --radius: 10px;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+/* ── Wrapper ── */
+.setup-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+/* ── Header ── */
+.setup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 0;
+}
+
+.brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--indigo);
+    letter-spacing: 1px;
+}
+
+.onboarding-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--indigo);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* ── Progress bar ── */
+.progress-bar-wrap {
+    display: flex;
+    gap: 6px;
+    margin: 1rem 0 0.5rem;
+}
+
+.progress-segment {
+    flex: 1;
+    height: 5px;
+    border-radius: 4px;
+    background: var(--border);
+    transition: background 0.3s;
+}
+
+    .progress-segment.done {
+        background: var(--teal);
+    }
+
+    .progress-segment.active {
+        background: var(--indigo);
+    }
+
+/* ── Step labels ── */
+.step-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+    .step-labels .active-label {
+        color: var(--indigo);
+    }
+
+/* ── Step card ── */
+.step-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+}
+
+.step-intro {
+    margin-bottom: 2rem;
+}
+
+.step-num {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--indigo);
+    margin-bottom: 0.4rem;
+}
+
+.step-card h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.step-desc {
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+    line-height: 1.5;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+/* ── Form elements ── */
+.form-group {
+    margin-bottom: 1.4rem;
+}
+
+    .form-group label {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--text-mid);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        background: var(--bg);
+        outline: none;
+        transition: border-color 0.2s;
+        font-family: inherit;
+        resize: vertical;
+    }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--indigo);
+            background: var(--white);
+        }
+
+/* ── VARK grid ── */
+.vark-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.vark-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    position: relative;
+}
+
+    .vark-card input[type="radio"] {
+        display: none;
+    }
+
+    .vark-card.selected {
+        border-color: var(--indigo);
+        background: #f0f0fe;
+    }
+
+        .vark-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 0.7rem;
+            right: 0.7rem;
+            background: var(--indigo);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+.vark-icon {
+    font-size: 1.6rem;
+}
+
+.vark-card strong {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.vark-card small {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    line-height: 1.4;
+}
+
+/* ── Pace toggle ── */
+.pace-toggle {
+    display: flex;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+    .pace-toggle label {
+        flex: 1;
+        text-align: center;
+        padding: 0.7rem;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        color: var(--text-mid);
+        transition: background 0.2s, color 0.2s;
+    }
+
+        .pace-toggle label.selected,
+        .pace-toggle label:has(input:checked) {
+            background: var(--indigo);
+            color: white;
+        }
+
+    .pace-toggle input[type="radio"] {
+        display: none;
+    }
+
+.pace-hint {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--indigo);
+    margin-top: 0.6rem;
+}
+
+/* ── Consistency slider ── */
+.slider-wrap {
+    margin-top: 0.5rem;
+}
+
+    .slider-wrap input[type="range"] {
+        width: 100%;
+        accent-color: var(--indigo);
+    }
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+}
+
+.slider-current {
+    font-weight: 700;
+    color: var(--indigo);
+}
+
+/* ── Collab cards ── */
+.collab-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.collab-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+    .collab-card input {
+        display: none;
+    }
+
+    .collab-card.selected {
+        border-color: var(--indigo);
+        background: #f0f0fe;
+    }
+
+    .collab-card span {
+        font-size: 1.3rem;
+    }
+
+    .collab-card strong {
+        font-size: 0.85rem;
+        color: var(--text-dark);
+    }
+
+    .collab-card small {
+        font-size: 0.78rem;
+        color: var(--text-mid);
+    }
+
+/* ── Interests grid ── */
+.interests-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.interest-chip {
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 30px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--text-mid);
+    transition: all 0.2s;
+}
+
+    .interest-chip input {
+        display: none;
+    }
+
+    .interest-chip.selected {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+        font-weight: 600;
+    }
+
+.interests-count {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    text-align: right;
+}
+
+/* ── Availability ── */
+.availability-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.timetable-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+    .timetable-header button {
+        background: none;
+        border: none;
+        font-size: 0.8rem;
+        color: var(--indigo);
+        cursor: pointer;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+.timetable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .timetable th {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: var(--text-mid);
+        padding: 0.4rem;
+        text-align: center;
+    }
+
+.slot-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    letter-spacing: 0.04em;
+    padding-right: 0.8rem;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.slot-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    margin: 3px auto;
+    transition: all 0.15s;
+    font-size: 0.9rem;
+}
+
+    .slot-cell.checked {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+    }
+
+    .slot-cell input {
+        display: none;
+    }
+
+/* ── Session panel ── */
+.session-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.panel-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-mid);
+    margin-bottom: 0.2rem;
+}
+
+.session-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+    .session-option.selected {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+        font-weight: 600;
+    }
+
+    .session-option input {
+        display: none;
+    }
+
+.ai-insight {
+    background: #f0f8ff;
+    border: 1px solid #cce5ff;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+.ai-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.ai-insight p {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+}
+
+/* ── Navigation ── */
+.step-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+}
+
+.btn-next {
+    background: var(--indigo);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.85rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+    .btn-next:hover {
+        background: var(--indigo-dark);
+    }
+
+/* ── Alert ── */
+.alert {
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    margin-bottom: 1.2rem;
+}
+
+.alert-error {
+    background: #fdf0ef;
+    border: 1px solid #f5c6c2;
+    color: var(--error);
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+    .vark-grid, .collab-options {
+        grid-template-columns: 1fr;
+    }
+
+    .availability-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .step-labels {
+        display: none;
+    }
+}
+
+/* Interaction preference hints */
+.interaction-descriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+    background: #f8f8ff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+}
+
+.interaction-hint {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+}
+
+.interaction-hint strong {
+    color: var(--indigo);
+    font-weight: 700;
+}

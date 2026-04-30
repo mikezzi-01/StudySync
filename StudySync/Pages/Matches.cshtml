@@ -1,0 +1,379 @@
+﻿@page
+@model StudySync.Pages.MatchesModel
+@{
+    ViewData["Title"] = "AI Matches";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — AI Matches</title>
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/matches.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR (same as dashboard)
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">&#9633; StudySync</div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">COMPUTER SCIENCE DEPT.</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item">
+                    <span class="nav-icon">&#9646;&#9646;</span> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item active">
+                    <span class="nav-icon">&#9881;</span> AI MATCHES
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#9646;</span> FLASHCARDS
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#128101;</span> COLLABORATE
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#9998;</span> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="btn-start-session">Start Study Session</a>
+                <a href="#" class="nav-item-sm">&#63; HELP CENTER</a>
+                <a href="/Logout" class="nav-item-sm">&#8594; LOGOUT</a>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="search-bar">
+                    <span>&#128269;</span>
+                    <input type="text" id="searchInput"
+                           placeholder="Search resources or partners..."
+                           oninput="filterCards()" />
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn">&#128276;</button>
+                    <button class="icon-btn">&#9881;</button>
+                    <div class="topbar-avatar">@Model.UserInitials</div>
+                </div>
+            </div>
+
+            <!-- Page heading -->
+            <div class="matches-heading">
+                <div>
+                    <h1>Match Suggestions</h1>
+                    <p>Showing <strong>@Model.Matches.Count academic partners</strong> tailored to your profile.</p>
+                </div>
+                <div class="sort-bar">
+                    <span>SORT BY:</span>
+                    <select id="sortSelect" onchange="sortCards()">
+                        <option value="score">Match Score</option>
+                        <option value="name">Name</option>
+                        <option value="level">Academic Level</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="matches-layout">
+
+                <!-- ── Filter panel ── -->
+                <aside class="filter-panel">
+                    <p class="filter-title">FILTER PARAMETERS</p>
+
+                    <div class="filter-group">
+                        <label>MINIMUM MATCH SCORE (<span id="scoreVal">@Model.MinScore</span>%)</label>
+                        <input type="range" id="scoreSlider" min="0" max="100"
+                               value="@Model.MinScore"
+                               oninput="document.getElementById('scoreVal').textContent=this.value; filterCards()" />
+                        <div class="slider-ends"><span>0%</span><span>100%</span></div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>ACADEMIC LEVEL</label>
+                        @foreach (var level in new[] { "100", "200", "300", "400" })
+                        {
+                            <label class="check-label">
+                                <input type="checkbox" class="level-check"
+                                       value="@level" checked
+                                       onchange="filterCards()" />
+                                @level Level
+                            </label>
+                        }
+                    </div>
+
+                    <div class="filter-group">
+                        <label>INTERESTS</label>
+                        <div class="filter-chips" id="interestFilters">
+                            @foreach (var interest in Model.AllInterests)
+                            {
+                                <label class="filter-chip">
+                                    <input type="checkbox" class="interest-check"
+                                           value="@interest" onchange="filterCards()" />
+                                    @interest
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <button class="btn-reset" onclick="resetFilters()">RESET FILTERS</button>
+                </aside>
+
+                <!-- ── Match cards list ── -->
+                <div class="cards-area">
+
+                    @if (Model.Matches.Count == 0)
+                    {
+                        <div class="empty-state">
+                            <p>&#9881; No matches found yet. Make sure your profile is at least 60% complete and the AI engine has run.</p>
+                            <a href="/Profile/Setup">Complete Your Profile</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="matchCardsList">
+                            @foreach (var match in Model.Matches)
+                            {
+                                <div class="match-list-card"
+                                     data-score="@match.Score"
+                                     data-name="@match.FullName"
+                                     data-level="@match.AcademicLevel"
+                                     data-interests="@string.Join(",", match.InterestTags)">
+
+                                    <!-- Left: summary -->
+                                    <div class="card-left" onclick="showDetail(@match.UserID)">
+                                        <div class="card-avatar">@match.Initials</div>
+                                        <div class="card-info">
+                                            <div class="card-name">@match.FullName</div>
+                                            <div class="card-sub">@match.AcademicLevel LEVEL</div>
+                                            <div class="card-row">
+                                                <span class="card-label">LEARNING STYLE</span>
+                                                <span class="card-bar-wrap">
+                                                    <span class="card-bar" style="width:@match.Score%"></span>
+                                                </span>
+                                            </div>
+                                            <div class="card-row">
+                                                <span class="card-label">AVAILABILITY OVERLAP</span>
+                                                <span class="card-pill high">HIGH &#8593;</span>
+                                            </div>
+                                            <div class="card-tags">
+                                                @foreach (var tag in match.InterestTags.Take(3))
+                                                {
+                                                    <span class="tag">@tag</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: score + action -->
+                                    <div class="card-right">
+                                        <div class="big-score @(match.Score >= 80 ? "score-green" : match.Score >= 60 ? "score-blue" : "score-grey")">
+                                            @match.Score%<br /><small>MATCH</small>
+                                        </div>
+                                        <button class="btn-send"
+                                                onclick="sendRequest(@match.UserID, this)"
+                                                @(match.AlreadyRequested ? "disabled" : "")>
+                                            @(match.AlreadyRequested ? "REQUEST SENT" : "SEND REQUEST")
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         DETAIL OVERLAY
+    ══════════════════════════════════════════ -->
+    <div id="detailOverlay" class="detail-overlay hidden">
+        <div class="detail-panel">
+            <button class="detail-close" onclick="closeDetail()">&#10005;</button>
+            <div class="detail-header">
+                <div class="detail-avatar" id="detailAvatar"></div>
+                <div>
+                    <div class="detail-name" id="detailName"></div>
+                    <div class="detail-sub" id="detailSub"></div>
+                </div>
+                <div class="detail-score-badge" id="detailScore"></div>
+            </div>
+            <p class="detail-bio" id="detailBio"></p>
+            <div class="detail-section">
+                <p class="detail-label">AVAILABILITY OVERLAP</p>
+                <p class="detail-value" id="detailAvailability"></p>
+            </div>
+            <div class="detail-section">
+                <p class="detail-label">INTERESTS</p>
+                <div id="detailInterests" class="card-tags"></div>
+            </div>
+            <div class="detail-actions">
+                <button class="btn-send" id="detailSendBtn">SEND INVITATION</button>
+                <button class="icon-btn">&#128172;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Match data for JS ─────────────────────────────────────────────────
+        const matchData = @Html.Raw(Model.MatchesJson);
+
+        // ── Show detail overlay ───────────────────────────────────────────────
+        function showDetail(userId) {
+            const m = matchData.find(x => x.userID === userId);
+            if (!m) return;
+
+            document.getElementById('detailAvatar').textContent       = m.initials;
+            document.getElementById('detailName').textContent         = m.fullName;
+            document.getElementById('detailSub').textContent          = m.academicLevel + ' LEVEL • COMPUTER SCIENCE';
+            document.getElementById('detailScore').textContent        = m.score + '% MATCH';
+            document.getElementById('detailBio').textContent          = m.bio || 'No bio provided.';
+            document.getElementById('detailAvailability').textContent = m.availability || 'Not specified.';
+
+            const intDiv = document.getElementById('detailInterests');
+            intDiv.innerHTML = m.interestTags.map(t => `<span class="tag">${t}</span>`).join('');
+
+            const btn = document.getElementById('detailSendBtn');
+            btn.disabled  = m.alreadyRequested;
+            btn.textContent = m.alreadyRequested ? 'REQUEST SENT' : 'SEND INVITATION';
+            btn.onclick   = () => sendRequest(userId, btn);
+
+            document.getElementById('detailOverlay').classList.remove('hidden');
+        }
+
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.add('hidden');
+        }
+
+        // ── Send partnership request ──────────────────────────────────────────
+        async function sendRequest(targetUserId, btn) {
+            btn.disabled     = true;
+            btn.textContent  = 'Sending...';
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+            const response = await fetch('/Matches?handler=SendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ targetUserId })
+            });
+
+            if (response.ok) {
+                btn.textContent = 'REQUEST SENT';
+            } else {
+                btn.textContent = 'SEND REQUEST';
+                btn.disabled    = false;
+                alert('Could not send request. You may have already sent one.');
+            }
+        }
+
+        // ── Filter cards ─────────────────────────────────────────────────────
+        function filterCards() {
+            const minScore      = parseInt(document.getElementById('scoreSlider').value);
+            const searchText    = document.getElementById('searchInput').value.toLowerCase();
+            const checkedLevels = [...document.querySelectorAll('.level-check:checked')].map(c => c.value);
+            const checkedInts   = [...document.querySelectorAll('.interest-check:checked')].map(c => c.value);
+
+            document.querySelectorAll('.match-list-card').forEach(card => {
+                const score     = parseInt(card.dataset.score);
+                const name      = card.dataset.name.toLowerCase();
+                const level     = card.dataset.level;
+                const interests = card.dataset.interests.split(',');
+
+                const passScore   = score >= minScore;
+                const passSearch  = name.includes(searchText);
+                const passLevel   = checkedLevels.includes(level);
+                const passInterest= checkedInts.length === 0 ||
+                                    checkedInts.some(i => interests.includes(i));
+
+                card.style.display = (passScore && passSearch && passLevel && passInterest)
+                    ? '' : 'none';
+            });
+        }
+
+        // ── Sort cards ───────────────────────────────────────────────────────
+        function sortCards() {
+            const sortBy  = document.getElementById('sortSelect').value;
+            const list    = document.getElementById('matchCardsList');
+            const cards   = [...list.querySelectorAll('.match-list-card')];
+
+            cards.sort((a, b) => {
+                if (sortBy === 'score') return parseInt(b.dataset.score) - parseInt(a.dataset.score);
+                if (sortBy === 'name')  return a.dataset.name.localeCompare(b.dataset.name);
+                if (sortBy === 'level') return parseInt(a.dataset.level) - parseInt(b.dataset.level);
+                return 0;
+            });
+
+            cards.forEach(c => list.appendChild(c));
+        }
+
+        // ── Reset filters ────────────────────────────────────────────────────
+        function resetFilters() {
+            document.getElementById('scoreSlider').value   = 0;
+            document.getElementById('scoreVal').textContent = 0;
+            document.getElementById('searchInput').value   = '';
+            document.querySelectorAll('.level-check').forEach(c => c.checked = true);
+            document.querySelectorAll('.interest-check').forEach(c => c.checked = false);
+            filterCards();
+        }
+
+        // ── Navigation toggle ────────────────────────────────────────────────
+        const navToggle = document.getElementById('navToggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+
+            // Close sidebar when a link is clicked
+            const navItems = document.querySelectorAll('.sidebar .nav-item, .sidebar .nav-item-sm, .sidebar .btn-start-session');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                });
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !navToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+

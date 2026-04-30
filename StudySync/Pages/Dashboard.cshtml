@@ -1,0 +1,260 @@
+﻿@page
+@model StudySync.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Dashboard</title>
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">&#9633; StudySync</div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">@Model.Department</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item active">
+                    <span class="nav-icon">&#9646;&#9646;</span> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item">
+                    <span class="nav-icon">&#9881;</span> AI MATCHES
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#9646;</span> FLASHCARDS
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#128101;</span> COLLABORATE
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">&#9998;</span> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="/Dashboard?handler=StartSession" class="btn-start-session">
+                    Start Study Session
+                </a>
+                <a href="#" class="nav-item-sm">&#63; HELP CENTER</a>
+                <a href="/Logout" class="nav-item-sm">&#8594; LOGOUT</a>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="search-bar">
+                    <span>&#128269;</span>
+                    <input type="text" placeholder="Search resources or partners..." />
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn">&#128276;</button>
+                    <button class="icon-btn">&#9881;</button>
+                    <div class="topbar-avatar">@Model.UserInitials</div>
+                </div>
+            </div>
+
+            <!-- Greeting banner -->
+            <div class="greeting-banner">
+                <div>
+                    <h1>Good @Model.TimeOfDay, @Model.FirstName &#128075;</h1>
+                    <p>Your AI Matcher found <strong>@Model.NewMatchCount new potential study partners</strong> for you. Ready to collaborate?</p>
+                </div>
+                <a href="/Matches" class="btn-find-partner">Find Partner</a>
+            </div>
+
+            <!-- Metric cards -->
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-label">ACTIVE PARTNERSHIPS</div>
+                    <div class="metric-value">@Model.ActivePartnerships</div>
+                    <div class="metric-icon">&#128279;</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">MESSAGES</div>
+                    <div class="metric-value">@Model.UnreadMessages</div>
+                    <div class="metric-icon">&#128172;</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">PROFILE STATUS</div>
+                    <div class="metric-value">
+                        <div class="completion-ring">
+                            <svg viewBox="0 0 36 36">
+                                <path class="ring-bg"
+                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="ring-fill"
+                                      stroke-dasharray="@Model.ProfileCompletion, 100"
+                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                            <span class="ring-pct">@Model.ProfileCompletion%</span>
+                        </div>
+                    </div>
+                    <div class="metric-sub">Completion</div>
+                </div>
+            </div>
+
+            <!-- Top AI Matches -->
+            <div class="section-header">
+                <div>
+                    <p class="powered-by">POWERED BY AI MATCHER</p>
+                    <h2>Top Matches For You</h2>
+                </div>
+                <a href="/Matches" class="view-all">View All Matches</a>
+            </div>
+
+            @if (Model.TopMatches.Count == 0)
+            {
+                <div class="empty-state">
+                    <p>&#9881; Your AI matches are being computed. Check back shortly or <a href="/Profile/Setup">complete your profile</a> to improve results.</p>
+                </div>
+            }
+            else
+            {
+                <div class="matches-row">
+                    @foreach (var match in Model.TopMatches)
+                    {
+                        <div class="match-card">
+                            <div class="match-avatar-wrap">
+                                <div class="match-avatar">@match.Initials</div>
+                                <div class="match-pct @(match.Score >= 90 ? "pct-green" : match.Score >= 75 ? "pct-blue" : "pct-grey")">
+                                    @match.Score% MATCH
+                                </div>
+                            </div>
+                            <div class="match-name">@match.FullName</div>
+                            <div class="match-dept">@match.Department</div>
+                            <div class="match-tags">
+                                @foreach (var tag in match.InterestTags)
+                                {
+                                    <span class="tag">@tag</span>
+                                }
+                            </div>
+                            <div class="match-actions">
+                                <button class="btn-outline">View Profile</button>
+                                <button class="btn-primary"
+                                        onclick="sendRequest(@match.UserID)">
+                                    Send Request
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Currently Collaborating With -->
+            <div class="section-header" style="margin-top:2.5rem;">
+                <h2>Currently Collaborating With</h2>
+            </div>
+
+            @if (Model.ActiveCollaborations.Count == 0)
+            {
+                <div class="empty-state">
+                    <p>&#128101; No active collaborations yet. Send a request to one of your matches to get started!</p>
+                </div>
+            }
+            else
+            {
+                <div class="collab-list">
+                    @foreach (var collab in Model.ActiveCollaborations)
+                    {
+                        <div class="collab-row">
+                            <div class="collab-avatar">@collab.Initials</div>
+                            <div class="collab-info">
+                                <div class="collab-name">@collab.FullName</div>
+                                <div class="collab-project">@collab.ProjectLabel</div>
+                            </div>
+                            <div class="collab-status">
+                                <div class="status-label">STATUS</div>
+                                <div class="status-value @(collab.IsActive ? "status-active" : "status-waiting")">
+                                    &#9679; @collab.Status
+                                </div>
+                            </div>
+                            <div class="collab-actions">
+                                <button class="icon-btn">&#128172;</button>
+                                <button class="icon-btn">&#128197;</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </main>
+    </div>
+
+    <script>
+        // Navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+
+            // Close sidebar when a link is clicked
+            const navItems = document.querySelectorAll('.sidebar .nav-item, .sidebar .nav-item-sm, .sidebar .btn-start-session');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                });
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !navToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                }
+            });
+        }
+
+        async function sendRequest(targetUserId) {
+            const response = await fetch('/Dashboard?handler=SendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.cookie
+                        .split(';').find(c => c.trim().startsWith('XSRF'))?.split('=')[1] || ''
+                },
+                body: JSON.stringify({ targetUserId })
+            });
+
+            if (response.ok) {
+                alert('Partnership request sent!');
+                location.reload();
+            } else {
+                alert('Could not send request. Please try again.');
+            }
+        }
+    </script>
+
+</body>
+</html>

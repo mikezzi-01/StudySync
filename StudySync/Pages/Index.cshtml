@@ -1,0 +1,226 @@
+﻿@page
+@model StudySync.Pages.IndexModel
+@{
+    ViewData["Title"] = "StudySync — Find Your Perfect Study Partner";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Find Your Perfect Study Partner, Powered by AI</title>
+    <link rel="stylesheet" href="~/css/landing.css" />
+</head>
+<body>
+
+    <!-- ══════════════════════════════════════════
+         NAVBAR
+    ══════════════════════════════════════════ -->
+    <nav class="navbar">
+        <div class="nav-brand">StudySync</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#how" class="nav-link">How It Works</a>
+            <a href="/Login" class="nav-link">Sign In</a>
+        </div>
+        <a href="/Register" class="btn-nav-cta">Get Started</a>
+        <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu hidden" id="mobileMenu">
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#how">How It Works</a>
+        <a href="/Login">Sign In</a>
+        <a href="/Register" class="mobile-cta">Get Started</a>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         HERO SECTION
+    ══════════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-badge">
+                <span class="badge-dot"></span> AI-POWERED MATCHING
+            </div>
+            <h1>
+                Find Your Perfect<br />
+                <span class="hero-accent">Study Partner</span>,<br />
+                Powered by AI
+            </h1>
+            <p class="hero-sub">
+                The architectural scholar platform for CS students. Don't browse
+                aimlessly — let our neural matching engine connect you with partners
+                who complement your skill set and schedule.
+            </p>
+            <div class="hero-actions">
+                <a href="/Register" class="btn-primary">Create Your Profile</a>
+                <a href="#how" class="btn-ghost">Learn How It Works</a>
+            </div>
+            <div class="hero-social-proof">
+                <div class="avatar-stack">
+                    <span class="av">S</span>
+                    <span class="av">J</span>
+                    <span class="av">A</span>
+                    <span class="av av-count">+2k</span>
+                </div>
+                <span>Joined by <strong>2,400+ scholars</strong> this week</span>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <!-- Live match preview card -->
+            <div class="preview-card">
+                <div class="preview-header">
+                    <div class="preview-icon">&#128269;</div>
+                    <div>
+                        <div class="preview-title">New Match Found!</div>
+                        <div class="preview-sub">Based on your Python skills</div>
+                    </div>
+                    <div class="preview-pct">87% MATCH</div>
+                </div>
+                <div class="preview-user">
+                    <div class="preview-avatar">AC</div>
+                    <div>
+                        <div class="preview-name">Alex Chen</div>
+                        <div class="preview-role">FULL-STACK DEV</div>
+                    </div>
+                    <div class="preview-stars">&#9733;&#9733;&#9733;&#9733;</div>
+                </div>
+                <div class="preview-tags-row">
+                    <div>
+                        <div class="preview-label">COMMON INTERESTS</div>
+                        <div class="preview-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Django</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="preview-label">AVAILABILITY</div>
+                        <div class="preview-avail">Weekends, 6pm+</div>
+                    </div>
+                </div>
+                <button class="btn-invite">Send Invite</button>
+                <div class="preview-ai-note">
+                    <span class="ai-dot"></span> AI analysing 12 new profiles...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         ABOUT / FEATURES SECTION
+    ══════════════════════════════════════════ -->
+    <section class="about" id="about">
+        <p class="section-label">ABOUT STUDYSYNC</p>
+        <h2>Built for Students Who Demand<br />Better Collaboration</h2>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#10024;</div>
+                <h3>Smart Matching</h3>
+                <p>Our proprietary algorithms analyse study habits, skill levels, and personality traits to find your ideal academic peer.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128187;</div>
+                <h3>Built for CS Students</h3>
+                <p>Optimised for technical collaboration with support for code-sharing, repository integration, and project tracking.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#10022;</div>
+                <h3>Real Collaboration Tools</h3>
+                <p>Integrated whiteboards, video chat, and shared flashcards ensure your study sessions are productive and focused.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         HOW IT WORKS
+    ══════════════════════════════════════════ -->
+    <section class="how" id="how">
+        <h2>Three Simple Steps to Success</h2>
+
+        <div class="steps-row">
+            <div class="step">
+                <div class="step-num">01</div>
+                <h3>Build Your Profile</h3>
+                <p>Tell us your major, technical stack, and your availability. The more detail, the better the match.</p>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step active-step">
+                <div class="step-num active-num">02</div>
+                <h3>Get AI-Matched</h3>
+                <p>Our neural engine scans thousands of scholars to present you with your top 3 most compatible partners.</p>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <h3>Start Collaborating</h3>
+                <p>Accept a match and jump straight into our virtual workspace to start building something amazing together.</p>
+            </div>
+        </div>
+
+        <div class="how-cta">
+            <a href="/Register" class="btn-primary">Find Your Partner Now</a>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-brand">&#9633; StudySync</div>
+        <p class="footer-tagline">Elevating the collaborative experience for the next generation of computer scientists through architectural logic and AI-driven precision.</p>
+
+        <div class="footer-links">
+            <div class="footer-col">
+                <p class="footer-col-title">PLATFORM</p>
+                <a href="#">Discover</a>
+                <a href="#">Library</a>
+                <a href="/Matches">AI Matches</a>
+            </div>
+            <div class="footer-col">
+                <p class="footer-col-title">LEGAL</p>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Academic Integrity</a>
+            </div>
+            <div class="footer-col">
+                <p class="footer-col-title">SUPPORT</p>
+                <a href="#">Help Center</a>
+                <a href="#">API Docs</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>&#169; 2024 STUDYSYNC. DESIGNED FOR COMPUTER SCIENCE SCHOLARS.</span>
+            <span>SYSTEM STATUS: OPTIMAL &nbsp; v4.2.1-STABLE</span>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+

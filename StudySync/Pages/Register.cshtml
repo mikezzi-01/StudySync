@@ -1,0 +1,162 @@
+﻿@page
+@model StudySync.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Create Account</title>
+    <link rel="stylesheet" href="~/css/auth.css" />
+</head>
+<body>
+
+    <div class="auth-container">
+
+        <!-- Left branding panel -->
+        <div class="auth-brand">
+            <div class="brand-logo">
+                <span class="logo-icon">&#9633;</span> STUDYSYNC
+            </div>
+            <h1>Start Your Journey<br />to Academic<br />Mastery.</h1>
+            <p>Connect with fellow Computer Science scholars, synchronize your study sessions, and master the digital world together.</p>
+            <div class="brand-badge">
+                <span class="badge-icon">&#9881;</span>
+                <div>
+                    <strong>AI Matching Enabled</strong>
+                    <small>Finding partners with similar tech stacks...</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="auth-form-panel">
+            <h2>Create your account</h2>
+            <p class="form-subtitle">
+                Already have an account? <a href="/Login">Sign In</a>
+            </p>
+
+            <!-- Server-side validation summary -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-error">@Model.ErrorMessage</div>
+            }
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Input.FirstName">FULL NAME</label>
+                        <input asp-for="Input.FirstName" placeholder="John Doe" />
+                        <span asp-validation-for="Input.FirstName" class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.MatriculationNumber">MATRIC NUMBER</label>
+                        <input asp-for="Input.MatriculationNumber" placeholder="FOC/22/000001" />
+                        <span asp-validation-for="Input.MatriculationNumber" class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Email">EMAIL ADDRESS</label>
+                    <input asp-for="Input.Email" type="email" placeholder="scholar@university.edu" />
+                    <span asp-validation-for="Input.Email" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.AcademicLevel">ACADEMIC LEVEL</label>
+                    <select asp-for="Input.AcademicLevel">
+                        <option value="">Select Level</option>
+                        <option value="100">100 Level</option>
+                        <option value="200">200 Level</option>
+                        <option value="300">300 Level</option>
+                        <option value="400">400 Level</option>
+                    </select>
+                    <span asp-validation-for="Input.AcademicLevel" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Password">PASSWORD</label>
+                    <div class="password-wrapper">
+                        <input asp-for="Input.Password" type="password"
+                               id="passwordInput" placeholder="••••••••" />
+                        <button type="button" class="toggle-password"
+                                onclick="togglePassword('passwordInput', this)">
+                            &#128065;
+                        </button>
+                    </div>
+                    <div class="password-strength" id="strengthBar"></div>
+                    <small id="strengthLabel" class="strength-label"></small>
+                    <span asp-validation-for="Input.Password" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword">CONFIRM PASSWORD</label>
+                    <div class="password-wrapper">
+                        <input asp-for="Input.ConfirmPassword" type="password"
+                               id="confirmInput" placeholder="••••••••" />
+                        <button type="button" class="toggle-password"
+                                onclick="togglePassword('confirmInput', this)">
+                            &#128065;
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.ConfirmPassword" class="field-error"></span>
+                </div>
+
+                <div class="form-group form-check">
+                    <input asp-for="Input.AgreeToTerms" type="checkbox" id="termsCheck" />
+                    <label for="termsCheck">
+                        I agree to the <a href="#">Terms of Service</a> and
+                        <a href="#">Academic Integrity Policy</a>.
+                    </label>
+                    <span asp-validation-for="Input.AgreeToTerms" class="field-error"></span>
+                </div>
+
+                <button type="submit" class="btn-primary">Create Account</button>
+
+                <div class="divider"><span>OR CONTINUE WITH</span></div>
+
+                <button type="button" class="btn-oauth">
+                    <span>G</span> Google
+                </button>
+            </form>
+
+            <p class="copyright">&#169; 2024 STUDYSYNC. FOR COMPUTER SCIENCE SCHOLARS.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Password visibility toggle
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Password strength indicator
+        document.getElementById('passwordInput').addEventListener('input', function () {
+            const val = this.value;
+            const bar = document.getElementById('strengthBar');
+            const label = document.getElementById('strengthLabel');
+            let strength = 0;
+            if (val.length >= 8)          strength++;
+            if (/[A-Z]/.test(val))        strength++;
+            if (/[0-9]/.test(val))        strength++;
+            if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+            const levels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            const colors = ['', '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71'];
+            bar.style.width     = (strength * 25) + '%';
+            bar.style.background = colors[strength];
+            label.textContent   = strength > 0 ? levels[strength] + ': ' +
+                (strength < 4 ? 'Add symbols and numbers' : 'Great password!') : '';
+        });
+    </script>
+
+</body>
+</html>

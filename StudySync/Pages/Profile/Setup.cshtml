@@ -1,0 +1,501 @@
+﻿@page
+@model StudySync.Pages.Profile.SetupModel
+@{
+    ViewData["Title"] = "Profile Setup";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Profile Setup</title>
+    <link rel="stylesheet" href="~/css/setup.css" />
+</head>
+<body>
+
+<div class="setup-wrapper">
+
+    <!-- Top bar -->
+    <header class="setup-header">
+        <div class="brand">&#9633; StudySync</div>
+        <div class="onboarding-label">Onboarding Phase</div>
+        <div class="user-avatar">@Model.UserInitials</div>
+    </header>
+
+    <!-- Progress bar -->
+    <div class="progress-bar-wrap">
+        @for (int i = 1; i <= 5; i++)
+        {
+            <div class="progress-segment @(i < Model.CurrentStep ? "done" : i == Model.CurrentStep ? "active" : "")"></div>
+        }
+    </div>
+
+    <!-- Step labels -->
+    <div class="step-labels">
+        <span class="@(Model.CurrentStep == 1 ? "active-label" : "")">PERSONAL INFO</span>
+        <span class="@(Model.CurrentStep == 2 ? "active-label" : "")">LEARNING STYLE</span>
+        <span class="@(Model.CurrentStep == 3 ? "active-label" : "")">STUDY HABITS</span>
+        <span class="@(Model.CurrentStep == 4 ? "active-label" : "")">INTERESTS</span>
+        <span class="@(Model.CurrentStep == 5 ? "active-label" : "")">AVAILABILITY</span>
+    </div>
+
+    <!-- Server error -->
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CurrentStep" value="@Model.CurrentStep" />
+
+        <div class="step-card">
+
+            <!-- ══════════════════════════════════════════
+                 STEP 1 — Personal Info
+            ══════════════════════════════════════════ -->
+            @if (Model.CurrentStep == 1)
+            {
+                <div class="step-intro">
+                    <p class="step-num">STEP 1 OF 5</p>
+                    <h2>Personal Information</h2>
+                    <p class="step-desc">Tell us a bit about yourself so we can personalise your experience.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>DEPARTMENT / FACULTY</label>
+                    <input type="text" name="Department"
+                           value="@Model.Input.Department"
+                           placeholder="e.g. Computer Science" />
+                </div>
+
+                <div class="form-group">
+                    <label>BIO (Optional)</label>
+                    <textarea name="Bio" rows="3"
+                              placeholder="Tell potential study partners a little about yourself...">@Model.Input.Bio</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>PREFERRED STUDY ENVIRONMENT</label>
+                    <select name="PreferredEnvironment">
+                        <option value="">Select environment</option>
+                        @foreach (var opt in new[] { "Quiet Library", "Online/Virtual", "Coffee Shop", "Study Room (Group)", "Home" })
+                        {
+                            if (Model.Input.PreferredEnvironment == opt)
+                            {
+                                <option value="@opt" selected>@opt</option>
+                            }
+                            else
+                            {
+                                <option value="@opt">@opt</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>PRIMARY MOTIVATION</label>
+                    <select name="MotivationDriver">
+                        <option value="">Select motivation</option>
+                        @foreach (var opt in new[] { "Exam Preparation", "Assignment Help", "Project Collaboration", "Skill Building", "General Study" })
+                        {
+                            if (Model.Input.MotivationDriver == opt)
+                            {
+                                <option value="@opt" selected>@opt</option>
+                            }
+                            else
+                            {
+                                <option value="@opt">@opt</option>
+                            }
+                        }
+                    </select>
+                </div>
+            }
+
+            <!-- ══════════════════════════════════════════
+                 STEP 2 — Learning Style (VARK)
+            ══════════════════════════════════════════ -->
+            @if (Model.CurrentStep == 2)
+            {
+                <div class="step-intro">
+                    <p class="step-num">STEP 2 OF 5</p>
+                    <h2>Learning Style</h2>
+                    <p class="step-desc">Select the mode that best describes how you absorb complex Computer Science concepts.</p>
+                </div>
+
+                <h3 class="section-title">How do you prefer to learn?</h3>
+
+                <div class="vark-grid">
+                    <label class="vark-card @(Model.Input.VarkStyle == "Visual" ? "selected" : "")">
+                        <input type="radio" name="VarkStyle" value="Visual"
+                               @(Model.Input.VarkStyle == "Visual" ? "checked" : "") />
+                        <span class="vark-icon">&#128065;</span>
+                        <strong>Visual Learner</strong>
+                        <small>You prefer diagrams, flowcharts, and visual code architectures over plain text.</small>
+                    </label>
+                    <label class="vark-card @(Model.Input.VarkStyle == "Auditory" ? "selected" : "")">
+                        <input type="radio" name="VarkStyle" value="Auditory"
+                               @(Model.Input.VarkStyle == "Auditory" ? "checked" : "") />
+                        <span class="vark-icon">&#127908;</span>
+                        <strong>Auditory Learner</strong>
+                        <small>Listening to lectures, podcasts, and participating in group discussions works best for you.</small>
+                    </label>
+                    <label class="vark-card @(Model.Input.VarkStyle == "Kinesthetic" ? "selected" : "")">
+                        <input type="radio" name="VarkStyle" value="Kinesthetic"
+                               @(Model.Input.VarkStyle == "Kinesthetic" ? "checked" : "") />
+                        <span class="vark-icon">&#9997;</span>
+                        <strong>Kinesthetic Learner</strong>
+                        <small>You learn by doing. Coding challenges and hardware assembly are your go-to methods.</small>
+                    </label>
+                    <label class="vark-card @(Model.Input.VarkStyle == "ReadWrite" ? "selected" : "")">
+                        <input type="radio" name="VarkStyle" value="ReadWrite"
+                               @(Model.Input.VarkStyle == "ReadWrite" ? "checked" : "") />
+                        <span class="vark-icon">&#128214;</span>
+                        <strong>Read &amp; Write</strong>
+                        <small>Detailed documentation, technical blogs, and taking structured notes are your strengths.</small>
+                    </label>
+                </div>
+
+                <h3 class="section-title" style="margin-top:2rem;">Study Pace</h3>
+                <p class="step-desc">Choose the tempo that keeps you engaged without causing burnout.</p>
+
+                <div class="pace-toggle">
+                    <label class="@(Model.Input.StudyPace == "1" ? "selected" : "")">
+                        <input type="radio" name="StudyPace" value="1"
+                               @(Model.Input.StudyPace == "1" ? "checked" : "") /> SLOW
+                    </label>
+                    <label class="@(Model.Input.StudyPace == "3" ? "selected" : "")">
+                        <input type="radio" name="StudyPace" value="3"
+                               @(Model.Input.StudyPace == "3" ? "checked" : "") /> MODERATE
+                    </label>
+                    <label class="@(Model.Input.StudyPace == "5" ? "selected" : "")">
+                        <input type="radio" name="StudyPace" value="5"
+                               @(Model.Input.StudyPace == "5" ? "checked" : "") /> FAST
+                    </label>
+                </div>
+                <p class="pace-hint" id="paceHint">
+                    @(Model.Input.StudyPace == "5" ? "\"I like to move through modules quickly and dive into advanced topics immediately.\"" :
+                      Model.Input.StudyPace == "1" ? "\"I prefer taking my time to fully understand each concept before moving on.\"" :
+                      "\"I like a balanced pace — steady progress without feeling rushed.\"")
+                </p>
+            }
+
+            <!-- ══════════════════════════════════════════
+                 STEP 3 — Study Habits
+            ══════════════════════════════════════════ -->
+            @if (Model.CurrentStep == 3)
+            {
+                <div class="step-intro">
+                    <p class="step-num">STEP 3 OF 5</p>
+                    <h2>Study Habits</h2>
+                    <p class="step-desc">Help us understand how you typically approach your studies.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>HOW CONSISTENT ARE YOUR STUDY SESSIONS?</label>
+                    <div class="slider-wrap">
+                        <input type="range" name="StudyConsistency" min="1" max="5"
+                               value="@(string.IsNullOrEmpty(Model.Input.StudyConsistencyStr) ? "3" : Model.Input.StudyConsistencyStr)"
+                               id="consistencySlider"
+                               oninput="document.getElementById('consistencyVal').textContent = consistencyLabels[this.value]" />
+                        <div class="slider-labels">
+                            <span>Very Inconsistent</span>
+                            <span id="consistencyVal" class="slider-current">
+                                @(Model.Input.StudyConsistencyStr == "1" ? "Very Inconsistent" :
+                                  Model.Input.StudyConsistencyStr == "2" ? "Inconsistent" :
+                                  Model.Input.StudyConsistencyStr == "4" ? "Consistent" :
+                                  Model.Input.StudyConsistencyStr == "5" ? "Very Consistent" : "Moderate")
+                            </span>
+                            <span>Very Consistent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>COLLABORATION MODE</label>
+                    <div class="collab-options">
+                        @foreach (var opt in new[] {
+                            ("1", "&#128100;", "Solo + Occasional Help", "Mostly independent, ask for help when stuck"),
+                            ("2", "&#128101;", "Pair Study",             "One dedicated study partner"),
+                            ("3", "&#128101;", "Small Group (3–5)",      "Small focused study cluster"),
+                            ("4", "&#128101;", "Large Group",            "Open group sessions, the more the merrier")
+                        })
+                        {
+                            <label class="collab-card @(Model.Input.CollaborationMode == opt.Item1 ? "selected" : "")">
+                                <input type="radio" name="CollaborationMode" value="@opt.Item1"
+                                       @(Model.Input.CollaborationMode == opt.Item1 ? "checked" : "") />
+                                <span>@Html.Raw(opt.Item2)</span>
+                                <strong>@opt.Item3</strong>
+                                <small>@opt.Item4</small>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>INTERACTION PREFERENCE</label>
+                    <div class="interaction-descriptions">
+                        <div class="interaction-hint">
+                            <strong>Synchronous</strong> — You and your partner study together in real time (live calls, shared sessions).
+                        </div>
+                        <div class="interaction-hint">
+                            <strong>Mixed</strong> — A combination of live sessions and independent work with check-ins.
+                        </div>
+                        <div class="interaction-hint">
+                            <strong>Asynchronous</strong> — You work independently and communicate through messages at your own pace.
+                        </div>
+                    </div>
+                    <div class="pace-toggle">
+                        <label class="@(Model.Input.InteractionType == "1" ? "selected" : "")">
+                            <input type="radio" name="InteractionType" value="1"
+                                   @(Model.Input.InteractionType == "1" ? "checked" : "") /> SYNCHRONOUS
+                        </label>
+                        <label class="@(Model.Input.InteractionType == "3" ? "selected" : "")">
+                            <input type="radio" name="InteractionType" value="3"
+                                   @(Model.Input.InteractionType == "3" ? "checked" : "") /> MIXED
+                        </label>
+                        <label class="@(Model.Input.InteractionType == "2" ? "selected" : "")">
+                            <input type="radio" name="InteractionType" value="2"
+                                   @(Model.Input.InteractionType == "2" ? "checked" : "") /> ASYNCHRONOUS
+                        </label>
+                    </div>
+                </div>
+            }
+
+            <!-- ══════════════════════════════════════════
+                 STEP 4 — Interests
+            ══════════════════════════════════════════ -->
+            @if (Model.CurrentStep == 4)
+            {
+                <div class="step-intro">
+                    <p class="step-num">STEP 4 OF 5</p>
+                    <h2>Academic Interests</h2>
+                    <p class="step-desc">Select all the CS topics you are interested in. Choose at least 3.</p>
+                </div>
+
+                <div class="interests-grid">
+                    @foreach (var interest in Model.AvailableInterests)
+                    {
+                        var isSelected = Model.Input.SelectedInterestIds.Contains(interest.InterestID);
+                        <label class="interest-chip @(isSelected ? "selected" : "")">
+                            <input type="checkbox" name="SelectedInterestIds"
+                                   value="@interest.InterestID"
+                                   @(isSelected ? "checked" : "") />
+                            @interest.InterestName
+                        </label>
+                    }
+                </div>
+                <p class="interests-count">
+                    <span id="interestCount">@Model.Input.SelectedInterestIds.Count</span> selected
+                </p>
+            }
+
+            <!-- ══════════════════════════════════════════
+                 STEP 5 — Availability
+            ══════════════════════════════════════════ -->
+            @if (Model.CurrentStep == 5)
+            {
+                <div class="step-intro">
+                    <p class="step-num">STEP 5 OF 5</p>
+                    <h2>When do you study?</h2>
+                    <p class="step-desc">We use your availability to match you with partners who are online when you are.</p>
+                </div>
+
+                <div class="availability-layout">
+                    <div class="timetable-wrap">
+                        <div class="timetable-header">
+                            <strong>Weekly Timetable</strong>
+                            <div>
+                                <button type="button" onclick="selectAll()">Select All</button>
+                                <button type="button" onclick="clearAll()">Clear All</button>
+                            </div>
+                        </div>
+                        <table class="timetable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    @foreach (var day in new[] { "MON","TUE","WED","THU","FRI","SAT","SUN" })
+                                    {
+                                        <th>@day</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var slots  = new[] { "MORNING\n08:00–12:00", "AFTERNOON\n12:00–17:00", "EVENING\n17:00–21:00", "LATE NIGHT\n21:00–02:00" };
+                                    var slotKeys = new[] { "MORN", "AFT", "EVE", "LATE" };
+                                    var days   = new[] { "MON","TUE","WED","THU","FRI","SAT","SUN" };
+                                }
+                                @for (int s = 0; s < slots.Length; s++)
+                                {
+                                    <tr>
+                                        <td class="slot-label">@Html.Raw(slots[s].Replace("\n","<br/>"))</td>
+                                        @for (int d = 0; d < days.Length; d++)
+                                        {
+                                            var key = $"{slotKeys[s]}_{days[d]}";
+                                            var isChecked = Model.Input.AvailabilitySlots.Contains(key);
+                                            <td>
+                                                <label class="slot-cell @(isChecked ? "checked" : "")">
+                                                    <input type="checkbox" name="AvailabilitySlots"
+                                                           value="@key" class="slot-check"
+                                                           @(isChecked ? "checked" : "")
+                                                           onchange="toggleSlot(this)" />
+                                                    @if (isChecked) { <span>&#10003;</span> }
+                                                </label>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="session-panel">
+                        <p class="panel-label">PREFERRED SESSION</p>
+                        @foreach (var sess in new[] {
+                            ("DeepWork",  "Deep Work (2h+)"),
+                            ("Standard",  "Standard (1h)"),
+                            ("Sprint",    "Quick Sprint (30m)")
+                        })
+                        {
+                            <label class="session-option @(Model.Input.PreferredSession == sess.Item1 ? "selected" : "")">
+                                <input type="radio" name="PreferredSession" value="@sess.Item1"
+                                       @(Model.Input.PreferredSession == sess.Item1 ? "checked" : "") />
+                                @sess.Item2
+                            </label>
+                        }
+
+                        <div class="ai-insight">
+                            <span class="ai-badge">&#9881; AI INSIGHT</span>
+                            <p>Based on your Computer Science curriculum, evening sessions align best with peak collaborative coding activity in your department.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div><!-- /.step-card -->
+
+        <!-- Navigation buttons -->
+        <div class="step-nav">
+            @if (Model.CurrentStep > 1)
+            {
+                <button type="submit" name="Action" value="Back" class="btn-back">
+                    &#8592; Back
+                </button>
+            }
+            else
+            {
+                <span></span>
+            }
+
+            @if (Model.CurrentStep < 5)
+            {
+                <button type="submit" name="Action" value="Next" class="btn-next">
+                    Next &#8594;
+                </button>
+            }
+            else
+            {
+                <button type="submit" name="Action" value="Complete" class="btn-next">
+                    Complete Profile &amp; Find Matches &#8594;
+                </button>
+            }
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    // Consistency slider labels
+    const consistencyLabels = {
+        1: "Very Inconsistent", 2: "Inconsistent",
+        3: "Moderate", 4: "Consistent", 5: "Very Consistent"
+    };
+
+    // Availability slot toggle
+    function toggleSlot(checkbox) {
+        const cell = checkbox.closest('.slot-cell');
+        if (checkbox.checked) {
+            cell.classList.add('checked');
+            cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
+                + checkbox.value + '" class="slot-check" checked onchange="toggleSlot(this)" /><span>&#10003;</span>';
+        } else {
+            cell.classList.remove('checked');
+            cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
+                + checkbox.value + '" class="slot-check" onchange="toggleSlot(this)" />';
+        }
+    }
+
+    function selectAll() {
+        document.querySelectorAll('.slot-check').forEach(cb => {
+            cb.checked = true;
+            cb.closest('.slot-cell').classList.add('checked');
+        });
+    }
+
+    function clearAll() {
+        document.querySelectorAll('.slot-check').forEach(cb => {
+            cb.checked = false;
+            cb.closest('.slot-cell').classList.remove('checked');
+        });
+    }
+
+    // Interest count
+    // Interest chips — highlight + count
+    document.querySelectorAll('input[name="SelectedInterestIds"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const chip = cb.closest('.interest-chip');
+            if (cb.checked) chip.classList.add('selected');
+            else chip.classList.remove('selected');
+
+            const count = document.querySelectorAll('input[name="SelectedInterestIds"]:checked').length;
+            const el = document.getElementById('interestCount');
+            if (el) el.textContent = count;
+        });
+    });
+
+    // VARK card highlight
+    document.querySelectorAll('.vark-card input').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.vark-card').forEach(c => c.classList.remove('selected'));
+            radio.closest('.vark-card').classList.add('selected');
+        });
+    });
+
+    // Collab card highlight
+    document.querySelectorAll('.collab-card input').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.collab-card').forEach(c => c.classList.remove('selected'));
+            radio.closest('.collab-card').classList.add('selected');
+        });
+    });
+    // Session option highlight
+    document.querySelectorAll('input[name="PreferredSession"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.session-option').forEach(s => s.classList.remove('selected'));
+            radio.closest('.session-option').classList.add('selected');
+        });
+    });
+
+    // Pace toggle highlight
+    document.querySelectorAll('.pace-toggle input').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
+            radio.closest('label').classList.add('selected');
+        });
+    });
+
+    // Interaction toggle highlight
+    document.querySelectorAll('input[name="InteractionType"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
+            radio.closest('label').classList.add('selected');
+        });
+    });
+</script>
+
+</body>
+</html>

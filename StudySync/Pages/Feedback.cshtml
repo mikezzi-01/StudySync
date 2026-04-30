@@ -1,0 +1,194 @@
+﻿@page "{partnershipId:int}"
+@model StudySync.Pages.FeedbackModel
+@{
+    ViewData["Title"] = "Partnership Feedback";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Partnership Feedback</title>
+    <link rel="stylesheet" href="~/css/feedback.css" />
+</head>
+<body>
+
+    <!-- Top bar -->
+    <header class="fb-header">
+        <div class="fb-brand">&#9633; StudySync</div>
+        <a href="/Dashboard" class="fb-back">&#8592; BACK TO DASHBOARD</a>
+    </header>
+
+    <div class="fb-wrapper">
+        <div class="fb-card">
+
+            @if (Model.AlreadySubmitted)
+            {
+                <!-- Already submitted state -->
+                <div class="submitted-state">
+                    <div class="submitted-icon">&#10003;</div>
+                    <h2>Feedback Already Submitted</h2>
+                    <p>You have already rated this partnership. Thank you for helping improve the AI matching system.</p>
+                    <a href="/Dashboard" class="btn-primary">Return to Dashboard</a>
+                </div>
+            }
+            else if (Model.PartnerName == null)
+            {
+                <!-- Partnership not found -->
+                <div class="submitted-state">
+                    <div class="submitted-icon" style="background:#fdf0ef; color:#e74c3c;">&#33;</div>
+                    <h2>Partnership Not Found</h2>
+                    <p>This partnership does not exist or you do not have access to it.</p>
+                    <a href="/Dashboard" class="btn-primary">Return to Dashboard</a>
+                </div>
+            }
+            else
+            {
+                <!-- Feedback form -->
+                <div class="fb-partner-info">
+                    <div class="fb-partner-avatar">@Model.PartnerInitials</div>
+                    <h2>How was your study partnership<br />with <span>@Model.PartnerName</span>?</h2>
+                    <p class="fb-subtitle">Your feedback helps us refine AI matches and build a better academic community.</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-error">@Model.ErrorMessage</div>
+                }
+
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PartnershipId" value="@Model.PartnershipId" />
+
+                    <!-- Overall rating -->
+                    <div class="rating-section">
+                        <p class="rating-label">OVERALL EXPERIENCE</p>
+                        <div class="star-row" id="overallStars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="star-btn"
+                                        data-value="@i"
+                                        onclick="setRating('overall', @i)">
+                                    &#9733;
+                                </button>
+                            }
+                        </div>
+                        <input type="hidden" name="OverallRating" id="overallRating" value="0" />
+                        <p class="rating-text" id="overallText"></p>
+                    </div>
+
+                    <!-- Sub-dimension ratings -->
+                    <div class="sub-ratings">
+                        <div class="sub-rating-row">
+                            <span class="sub-label">Learning Style Alignment</span>
+                            <div class="mini-stars" id="lsaStars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <button type="button" class="star-btn mini"
+                                            data-value="@i"
+                                            onclick="setRating('lsa', @i)">
+                                        &#9733;
+                                    </button>
+                                }
+                            </div>
+                            <input type="hidden" name="LsaRating" id="lsaRating" value="0" />
+                        </div>
+                        <div class="sub-rating-row">
+                            <span class="sub-label">Communication Quality</span>
+                            <div class="mini-stars" id="cqStars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <button type="button" class="star-btn mini"
+                                            data-value="@i"
+                                            onclick="setRating('cq', @i)">
+                                        &#9733;
+                                    </button>
+                                }
+                            </div>
+                            <input type="hidden" name="CqRating" id="cqRating" value="0" />
+                        </div>
+                        <div class="sub-rating-row">
+                            <span class="sub-label">Technical Proficiency</span>
+                            <div class="mini-stars" id="tpStars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <button type="button" class="star-btn mini"
+                                            data-value="@i"
+                                            onclick="setRating('tp', @i)">
+                                        &#9733;
+                                    </button>
+                                }
+                            </div>
+                            <input type="hidden" name="TpRating" id="tpRating" value="0" />
+                        </div>
+                    </div>
+
+                    <!-- Optional comment -->
+                    <div class="fb-group">
+                        <label class="fb-label">SPECIFIC FEEDBACK (OPTIONAL)</label>
+                        <textarea name="Comment" rows="4"
+                              placeholder="@Model.PartnerName was incredibly helpful with..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        SUBMIT FEEDBACK
+                    </button>
+                    <a href="/Dashboard" class="btn-skip">SKIP FOR NOW</a>
+
+                </form>
+            }
+
+        </div>
+    </div>
+
+    <!-- Footer icons -->
+    <footer class="fb-footer">
+        <span>&#128187;</span>
+        <span>&#9650;</span>
+        <span>&#931;</span>
+        <p>&#169; 2024 STUDYSYNC. DESIGNED FOR COMPUTER SCIENCE SCHOLARS.</p>
+    </footer>
+
+    <script>
+        const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Great', 'Excellent'];
+
+        const ratingMap = {
+            'overall': { starsId: 'overallStars', inputId: 'overallRating', textId: 'overallText' },
+            'lsa':     { starsId: 'lsaStars',     inputId: 'lsaRating',     textId: null },
+            'cq':      { starsId: 'cqStars',       inputId: 'cqRating',      textId: null },
+            'tp':      { starsId: 'tpStars',        inputId: 'tpRating',      textId: null },
+        };
+
+        function setRating(key, value) {
+            const { starsId, inputId, textId } = ratingMap[key];
+
+            // Update hidden input
+            document.getElementById(inputId).value = value;
+
+            // Highlight stars
+            const stars = document.querySelectorAll(`#${starsId} .star-btn`);
+            stars.forEach((star, idx) => {
+                star.classList.toggle('active', idx < value);
+            });
+
+            // Update label text if applicable
+            if (textId) {
+                document.getElementById(textId).textContent = ratingLabels[value];
+            }
+        }
+
+        // Validate overall rating before submit
+        document.querySelector('form')?.addEventListener('submit', function (e) {
+            const rating = parseInt(document.getElementById('overallRating').value);
+            if (rating === 0) {
+                e.preventDefault();
+                alert('Please select an overall rating before submitting.');
+            }
+        });
+    </script>
+
+</body>
+</html>
+

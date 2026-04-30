@@ -1,0 +1,374 @@
+﻿/* ============================================================
+   StudySync — Feedback Page Stylesheet
+   ============================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --indigo: #3D3BF3;
+    --indigo-dark: #2d2bc0;
+    --teal: #1abc9c;
+    --text-dark: #1a1a2e;
+    --text-mid: #555577;
+    --text-light: #8888aa;
+    --bg: #f4f4f8;
+    --white: #ffffff;
+    --error: #e74c3c;
+    --border: #ddddf0;
+    --radius: 12px;
+    --star-off: #ddddf0;
+    --star-on: #3D3BF3;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Header ── */
+.fb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+.fb-brand {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--indigo);
+    letter-spacing: 1px;
+}
+
+.fb-back {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+    .fb-back:hover {
+        color: var(--indigo);
+    }
+
+/* ── Card wrapper ── */
+.fb-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+}
+
+.fb-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+}
+
+/* ── Partner info ── */
+.fb-partner-info {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.fb-partner-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--indigo);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+    position: relative;
+}
+
+    .fb-partner-avatar::after {
+        content: '★';
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        background: var(--teal);
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+.fb-partner-info h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+    .fb-partner-info h2 span {
+        color: var(--indigo);
+    }
+
+.fb-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+}
+
+/* ── Overall star rating ── */
+.rating-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.rating-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--text-light);
+    margin-bottom: 0.8rem;
+}
+
+.star-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 2.2rem;
+    color: var(--star-off);
+    cursor: pointer;
+    transition: color 0.15s, transform 0.1s;
+    line-height: 1;
+    padding: 0;
+}
+
+    .star-btn:hover,
+    .star-btn.active {
+        color: var(--star-on);
+    }
+
+    .star-btn:hover {
+        transform: scale(1.15);
+    }
+
+.rating-text {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--teal);
+    min-height: 1.2rem;
+}
+
+/* ── Sub-dimension ratings ── */
+.sub-ratings {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.sub-rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sub-label {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    flex: 1;
+}
+
+.mini-stars {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.star-btn.mini {
+    font-size: 1.3rem;
+}
+
+/* ── Comment textarea ── */
+.fb-group {
+    margin-bottom: 1.5rem;
+}
+
+.fb-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-mid);
+    margin-bottom: 0.5rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: var(--bg);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+    textarea:focus {
+        border-color: var(--indigo);
+        background: var(--white);
+    }
+
+/* ── Buttons ── */
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--indigo);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-bottom: 0.8rem;
+}
+
+    .btn-primary:hover {
+        background: var(--indigo-dark);
+    }
+
+.btn-skip {
+    display: block;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+    .btn-skip:hover {
+        color: var(--text-dark);
+    }
+
+/* ── Already submitted / error states ── */
+.submitted-state {
+    text-align: center;
+    padding: 1rem;
+}
+
+.submitted-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #e8fdf5;
+    color: var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 auto 1.2rem;
+}
+
+.submitted-state h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+}
+
+.submitted-state p {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Alert ── */
+.alert {
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: #fdf0ef;
+    border: 1px solid #f5c6c2;
+    color: var(--error);
+}
+
+/* ── Footer ── */
+.fb-footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+    .fb-footer span {
+        font-size: 1.1rem;
+    }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .fb-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .fb-partner-info h2 {
+        font-size: 1.1rem;
+    }
+
+    .star-btn {
+        font-size: 1.8rem;
+    }
+
+    .sub-rating-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+}

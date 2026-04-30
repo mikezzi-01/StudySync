@@ -1,0 +1,116 @@
+﻿@page
+@model StudySync.Pages.LoginModel
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Sign In</title>
+    <link rel="stylesheet" href="~/css/auth.css" />
+</head>
+<body>
+
+    <div class="auth-container">
+
+        <!-- Left branding panel -->
+        <div class="auth-brand">
+            <div class="brand-logo">
+                <span class="logo-icon">&#9633;</span> STUDYSYNC
+            </div>
+            <h1>Welcome<br />Back!</h1>
+            <p>Rejoin your study clusters, pick up your last flashcard deck, and continue your journey toward mastery.</p>
+            <div class="brand-social">
+                <div class="avatar-stack">
+                    <span class="avatar">S</span>
+                    <span class="avatar">J</span>
+                    <span class="avatar">A</span>
+                    <span class="avatar-count">+2k</span>
+                </div>
+                <span>Join 2,000+ computer science scholars</span>
+            </div>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="auth-form-panel">
+            <h2>Sign in to StudySync</h2>
+            <p class="form-subtitle">
+                Don't have an account? <a href="/Register">Register here</a>
+            </p>
+
+            <!-- Error toast -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-error">
+                    <span>&#9888;</span> @Model.ErrorMessage
+                    <button type="button" onclick="this.parentElement.style.display='none'">&#10005;</button>
+                </div>
+            }
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label asp-for="Input.EmailOrMatric">EMAIL OR MATRIC NUMBER</label>
+                    <div class="input-icon-wrapper">
+                        @* <span class="input-icon">&#64;</span> *@
+                        <input asp-for="Input.EmailOrMatric"
+                               placeholder="e.g. FOC/22/000001 or scholar@uni.edu" />
+                    </div>
+                    <span asp-validation-for="Input.EmailOrMatric" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label asp-for="Input.Password">PASSWORD</label>
+                        <a href="/ForgotPassword" class="forgot-link">FORGOT PASSWORD?</a>
+                    </div>
+                    <div class="password-wrapper">
+                        <span class="input-icon">&#128274;</span>
+                        <input asp-for="Input.Password" type="password"
+                               id="loginPassword" placeholder="••••••••" />
+                        <button type="button" class="toggle-password"
+                                onclick="togglePassword('loginPassword', this)">
+                            &#128065;
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="field-error"></span>
+                </div>
+
+                <div class="form-group form-check">
+                    <input asp-for="Input.RememberMe" type="checkbox" id="rememberCheck" />
+                    <label for="rememberCheck">Remember this session</label>
+                </div>
+
+                <button type="submit" class="btn-primary">Sign In &#8594;</button>
+
+                <div class="divider"><span>SCHOLAR AUTH</span></div>
+
+                <div class="oauth-row">
+                    <button type="button" class="btn-oauth">
+                        <span>G</span> Google
+                    </button>
+                    <button type="button" class="btn-oauth">
+                        <span>&#9670;</span> GitHub
+                    </button>
+                </div>
+            </form>
+
+            <p class="copyright">&#169; 2024 STUDYSYNC. DESIGNED FOR COMPUTER SCIENCE SCHOLARS.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+
+</body>
+</html>
