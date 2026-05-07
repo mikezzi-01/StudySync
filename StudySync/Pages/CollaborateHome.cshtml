@@ -1,0 +1,233 @@
+﻿@page
+@model StudySync.Pages.CollaborateHomeModel
+@{
+    ViewData["Title"] = "Collaborate";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Collaborate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/collaboratehome.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-book-open"></i> StudySync
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">COMPUTER SCIENCE DEPT.</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item">
+                    <i class="fa-solid fa-table-cells-large nav-icon"></i> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item">
+                    <i class="fa-solid fa-brain nav-icon"></i> AI MATCHES
+                </a>
+                <a href="/Requests" class="nav-item">
+                    <i class="fa-solid fa-bell nav-icon"></i> REQUESTS
+                    @if (Model.PendingRequestCount > 0)
+                    {
+                        <span class="nav-badge">@Model.PendingRequestCount</span>
+                    }
+                </a>
+                <a href="/Flashcards" class="nav-item">
+                    <i class="fa-solid fa-layer-group nav-icon"></i> FLASHCARDS
+                </a>
+                <a href="/CollaborateHome" class="nav-item active">
+                    <i class="fa-solid fa-users nav-icon"></i> COLLABORATE
+                </a>
+                <a href="/Analytics" class="nav-item">
+                    <i class="fa-solid fa-chart-bar nav-icon"></i> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="btn-start-session">
+                    <i class="fa-solid fa-play"></i> Start Study Session
+                </a>
+                <a href="#" class="nav-item-sm">
+                    <i class="fa-solid fa-circle-question"></i> HELP CENTER
+                </a>
+                <a href="/Logout" class="nav-item-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay hidden" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search partners..." />
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    @await Html.PartialAsync("_Notifications")
+                    <button class="icon-btn"><i class="fas fa-cog"></i></button>
+                    <a href="/Profile" class="topbar-avatar">@Model.UserInitials</a>
+                </div>
+            </div>
+
+            <!-- Page heading -->
+            <div class="ch-heading">
+                <div>
+                    <h1><i class="fa-solid fa-users"></i> Collaborate</h1>
+                    <p>Your active study partnerships and workspaces.</p>
+                </div>
+                <a href="/Matches" class="btn-find-partner">
+                    <i class="fa-solid fa-plus"></i> Find New Partner
+                </a>
+            </div>
+
+            <!-- ── Active partnerships ── -->
+            @if (Model.ActivePartnerships.Count == 0)
+            {
+                <div class="empty-collab">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <h2>No Active Collaborations Yet</h2>
+                    <p>Once a study partner accepts your request, your workspace will appear here.</p>
+                    <a href="/Matches" class="btn-primary">
+                        <i class="fa-solid fa-brain"></i> Browse AI Matches
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="collab-grid">
+                    @foreach (var collab in Model.ActivePartnerships)
+                    {
+                        <div class="collab-card">
+                            <div class="collab-card-header">
+                                <div class="collab-av">@collab.Initials</div>
+                                <div class="collab-card-info">
+                                    <div class="collab-card-name">@collab.FullName</div>
+                                    <div class="collab-card-level">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                        @collab.AcademicLevel Level
+                                    </div>
+                                </div>
+                                <div class="collab-score @(collab.MatchScore >= 70 ? "score-green" : "score-blue")">
+                                    @collab.MatchScore%
+                                </div>
+                            </div>
+
+                            <div class="collab-card-tags">
+                                @foreach (var tag in collab.InterestTags.Take(3))
+                                {
+                                    <span class="tag">@tag</span>
+                                }
+                            </div>
+
+                            <div class="collab-card-meta">
+                                <span>
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    Partner since @collab.PartnerSince
+                                </span>
+                                <span class="status-active">
+                                    <i class="fa-solid fa-circle"></i> Active
+                                </span>
+                            </div>
+
+                            <div class="collab-card-actions">
+                                <a href="/Collaborate/@collab.PartnershipId"
+                                   class="btn-open-workspace">
+                                    <i class="fa-solid fa-comments"></i> Open Workspace
+                                </a>
+                                <a href="/Feedback/@collab.PartnershipId"
+                                   class="btn-feedback">
+                                    <i class="fa-solid fa-star"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- ── Ended partnerships ── -->
+            @if (Model.EndedPartnerships.Count > 0)
+            {
+                <div class="section-divider">
+                    <h2>Past Collaborations</h2>
+                </div>
+
+                <div class="collab-grid">
+                    @foreach (var collab in Model.EndedPartnerships)
+                    {
+                        <div class="collab-card ended-card">
+                            <div class="collab-card-header">
+                                <div class="collab-av av-grey">@collab.Initials</div>
+                                <div class="collab-card-info">
+                                    <div class="collab-card-name">@collab.FullName</div>
+                                    <div class="collab-card-level">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                        @collab.AcademicLevel Level
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="collab-card-meta">
+                                <span>
+                                    <i class="fa-solid fa-calendar-xmark"></i>
+                                    Ended @collab.PartnerSince
+                                </span>
+                                <span class="status-ended">
+                                    <i class="fa-solid fa-circle"></i> Ended
+                                </span>
+                            </div>
+
+                            <div class="collab-card-actions">
+                                <a href="/Feedback/@collab.PartnershipId"
+                                   class="btn-open-workspace">
+                                    <i class="fa-solid fa-star"></i> Leave Feedback
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('hidden');
+        }
+    </script>
+
+</body>
+</html>

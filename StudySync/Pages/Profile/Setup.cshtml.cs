@@ -12,11 +12,13 @@ namespace StudySync.Pages.Profile
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
+        private readonly MatchingEngineService _engine;
 
-        public SetupModel(StudySyncDbContext db, JwtService jwt)
+        public SetupModel(StudySyncDbContext db, JwtService jwt, MatchingEngineService engine)
         {
             _db = db;
             _jwt = jwt;
+            _engine = engine;
         }
 
         // ── Page state ───────────────────────────────────────────────────
@@ -145,6 +147,13 @@ namespace StudySync.Pages.Profile
             {
                 profile.ProfileCompletion = 100;
                 await _db.SaveChangesAsync();
+
+                // Wait for trigger to complete before redirecting
+                await _engine.TriggerMatchesForUserAsync(userId.Value);
+
+                // Small delay to allow Python engine to finish computing
+                await Task.Delay(3000);
+
                 return RedirectToPage("/Dashboard");
             }
 

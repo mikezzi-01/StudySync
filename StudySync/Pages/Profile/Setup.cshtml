@@ -11,6 +11,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StudySync — Profile Setup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/setup.css" />
 </head>
 <body>
@@ -19,7 +20,7 @@
 
     <!-- Top bar -->
     <header class="setup-header">
-        <div class="brand">&#9633; StudySync</div>
+        <div class="brand"><i class="fas fa-cube"></i> StudySync</div>
         <div class="onboarding-label">Onboarding Phase</div>
         <div class="user-avatar">@Model.UserInitials</div>
     </header>
@@ -81,7 +82,7 @@
                     <label>PREFERRED STUDY ENVIRONMENT</label>
                     <select name="PreferredEnvironment">
                         <option value="">Select environment</option>
-                        @foreach (var opt in new[] { "Quiet Library", "Online/Virtual", "Coffee Shop", "Study Room (Group)", "Home" })
+                        @foreach (var opt in new[] { "Quiet Library", "Online/Virtual", "Restaurants", "Study Room (Group)", "Home" })
                         {
                             if (Model.Input.PreferredEnvironment == opt)
                             {
@@ -131,21 +132,21 @@
                     <label class="vark-card @(Model.Input.VarkStyle == "Visual" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Visual"
                                @(Model.Input.VarkStyle == "Visual" ? "checked" : "") />
-                        <span class="vark-icon">&#128065;</span>
+                        <span class="vark-icon"><i class="fas fa-eye"></i></span>
                         <strong>Visual Learner</strong>
                         <small>You prefer diagrams, flowcharts, and visual code architectures over plain text.</small>
                     </label>
                     <label class="vark-card @(Model.Input.VarkStyle == "Auditory" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Auditory"
                                @(Model.Input.VarkStyle == "Auditory" ? "checked" : "") />
-                        <span class="vark-icon">&#127908;</span>
+                        <span class="vark-icon"><i class="fas fa-music"></i></span>
                         <strong>Auditory Learner</strong>
                         <small>Listening to lectures, podcasts, and participating in group discussions works best for you.</small>
                     </label>
                     <label class="vark-card @(Model.Input.VarkStyle == "Kinesthetic" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Kinesthetic"
                                @(Model.Input.VarkStyle == "Kinesthetic" ? "checked" : "") />
-                        <span class="vark-icon">&#9997;</span>
+                        <span class="vark-icon"><i class="fas fa-pen"></i></span>
                         <strong>Kinesthetic Learner</strong>
                         <small>You learn by doing. Coding challenges and hardware assembly are your go-to methods.</small>
                     </label>

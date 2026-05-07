@@ -11,14 +11,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StudySync — Partnership Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/feedback.css" />
 </head>
 <body>
 
     <!-- Top bar -->
     <header class="fb-header">
-        <div class="fb-brand">&#9633; StudySync</div>
-        <a href="/Dashboard" class="fb-back">&#8592; BACK TO DASHBOARD</a>
+        <div class="fb-brand"><i class="fas fa-cube"></i> StudySync</div>
+        <a href="/Dashboard" class="fb-back"><i class="fas fa-arrow-left"></i> BACK TO DASHBOARD</a>
     </header>
 
     <div class="fb-wrapper">
@@ -28,7 +29,7 @@
             {
                 <!-- Already submitted state -->
                 <div class="submitted-state">
-                    <div class="submitted-icon">&#10003;</div>
+                    <div class="submitted-icon"><i class="fas fa-check"></i></div>
                     <h2>Feedback Already Submitted</h2>
                     <p>You have already rated this partnership. Thank you for helping improve the AI matching system.</p>
                     <a href="/Dashboard" class="btn-primary">Return to Dashboard</a>
@@ -38,7 +39,7 @@
             {
                 <!-- Partnership not found -->
                 <div class="submitted-state">
-                    <div class="submitted-icon" style="background:#fdf0ef; color:#e74c3c;">&#33;</div>
+                    <div class="submitted-icon" style="background:#fdf0ef; color:#e74c3c;"><i class="fas fa-exclamation"></i></div>
                     <h2>Partnership Not Found</h2>
                     <p>This partnership does not exist or you do not have access to it.</p>
                     <a href="/Dashboard" class="btn-primary">Return to Dashboard</a>
@@ -71,7 +72,7 @@
                                 <button type="button" class="star-btn"
                                         data-value="@i"
                                         onclick="setRating('overall', @i)">
-                                    &#9733;
+                                    <i class="fas fa-star"></i>
                                 </button>
                             }
                         </div>
@@ -89,7 +90,7 @@
                                     <button type="button" class="star-btn mini"
                                             data-value="@i"
                                             onclick="setRating('lsa', @i)">
-                                        &#9733;
+                                        <i class="fas fa-star"></i>
                                     </button>
                                 }
                             </div>
@@ -103,7 +104,7 @@
                                     <button type="button" class="star-btn mini"
                                             data-value="@i"
                                             onclick="setRating('cq', @i)">
-                                        &#9733;
+                                        <i class="fas fa-star"></i>
                                     </button>
                                 }
                             </div>
@@ -117,7 +118,7 @@
                                     <button type="button" class="star-btn mini"
                                             data-value="@i"
                                             onclick="setRating('tp', @i)">
-                                        &#9733;
+                                        <i class="fas fa-star"></i>
                                     </button>
                                 }
                             </div>
@@ -145,9 +146,9 @@
 
     <!-- Footer icons -->
     <footer class="fb-footer">
-        <span>&#128187;</span>
-        <span>&#9650;</span>
-        <span>&#931;</span>
+        <span><i class="fas fa-laptop"></i></span>
+        <span><i class="fas fa-arrow-up"></i></span>
+        <span><i class="fas fa-sigma"></i></span>
         <p>&#169; 2024 STUDYSYNC. DESIGNED FOR COMPUTER SCIENCE SCHOLARS.</p>
     </footer>
 

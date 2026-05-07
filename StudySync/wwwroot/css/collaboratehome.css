@@ -1,0 +1,383 @@
+﻿/* ============================================================
+   StudySync — Collaborate Home Stylesheet
+   ============================================================ */
+
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* ── Page heading ── */
+.ch-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+    .ch-heading h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+        .ch-heading h1 i {
+            color: var(--indigo);
+        }
+
+    .ch-heading p {
+        font-size: 0.82rem;
+        color: var(--text-mid);
+        margin-top: 0.3rem;
+    }
+
+.btn-find-partner {
+    background: var(--indigo);
+    color: white;
+    padding: 0.7rem 1.3rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+    .btn-find-partner:hover {
+        background: var(--indigo-dark);
+    }
+
+/* ── Collab grid ── */
+.collab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* ── Collab card ── */
+.collab-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+    .collab-card:hover {
+        box-shadow: 0 4px 20px rgba(61,59,243,0.08);
+        border-color: var(--indigo);
+    }
+
+.ended-card {
+    opacity: 0.7;
+    background: var(--bg);
+}
+
+    .ended-card:hover {
+        border-color: var(--border);
+        box-shadow: none;
+    }
+
+/* Card header */
+.collab-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.collab-av {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--indigo);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.av-grey {
+    background: var(--text-light);
+}
+
+.collab-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.collab-card-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.collab-card-level {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.collab-score {
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.score-green {
+    background: #e8fdf5;
+    color: var(--teal);
+}
+
+.score-blue {
+    background: var(--indigo-light);
+    color: var(--indigo);
+}
+
+/* Tags */
+.collab-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+/* Meta row */
+.collab-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--text-light);
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+    .collab-card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+.status-active {
+    color: var(--teal);
+    font-weight: 700;
+}
+
+.status-ended {
+    color: var(--text-light);
+    font-weight: 700;
+}
+
+/* Card actions */
+.collab-card-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.btn-open-workspace {
+    flex: 1;
+    background: var(--indigo);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background 0.2s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+    .btn-open-workspace:hover {
+        background: var(--indigo-dark);
+    }
+
+.btn-feedback {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+    .btn-feedback:hover {
+        border-color: #f1c40f;
+        color: #f1c40f;
+    }
+
+/* ── Section divider ── */
+.section-divider {
+    margin: 1rem 0;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+}
+
+    .section-divider h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-mid);
+    }
+
+/* ── Empty state ── */
+.empty-collab {
+    background: var(--white);
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 4rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .empty-collab i {
+        font-size: 3rem;
+        color: var(--border);
+    }
+
+    .empty-collab h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .empty-collab p {
+        font-size: 0.85rem;
+        color: var(--text-mid);
+        max-width: 380px;
+        line-height: 1.6;
+    }
+
+.btn-primary {
+    background: var(--indigo);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.2s;
+}
+
+    .btn-primary:hover {
+        background: var(--indigo-dark);
+    }
+
+/* ── Notification dot ── */
+.notif-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e74c3c;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+.icon-btn {
+    position: relative;
+}
+
+/* ── Hamburger ── */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0.3rem;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 1;
+}
+
+/* ── Sidebar overlay ── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 99;
+}
+
+    .sidebar-overlay.hidden {
+        display: none;
+    }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+    }
+
+        .sidebar.sidebar-open {
+            left: 0;
+        }
+
+    .main-content {
+        margin-left: 0;
+        padding: 0 1rem 2rem;
+    }
+
+    .collab-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ch-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-find-partner {
+        width: 100%;
+        justify-content: center;
+    }
+}

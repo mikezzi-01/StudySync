@@ -1,0 +1,379 @@
+﻿@* ============================================================
+   StudySync — Notifications Partial
+   Include this inside every authenticated page's topbar
+   ============================================================ *@
+
+<!-- Notification bell + dropdown -->
+<div class="notif-wrapper" id="notifWrapper">
+    <button class="icon-btn notif-bell" onclick="toggleNotif(event)" title="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-badge hidden" id="notifBadge">0</span>
+    </button>
+
+    <div class="notif-dropdown hidden" id="notifDropdown">
+        <div class="notif-header">
+            <span class="notif-title">Notifications</span>
+            <button class="notif-mark-all" onclick="markAllRead()">
+                Mark all read
+            </button>
+        </div>
+        <div class="notif-list" id="notifList">
+            <div class="notif-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+            </div>
+        </div>
+        <div class="notif-footer">
+            <a href="/Requests">View All Requests</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .notif-wrapper {
+        position: relative;
+    }
+
+    .notif-bell {
+        position: relative;
+    }
+
+    .notif-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #e74c3c;
+        color: white;
+        font-size: 0.55rem;
+        font-weight: 700;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+        .notif-badge.hidden {
+            display: none;
+        }
+
+    .notif-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 320px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        z-index: 200;
+        overflow: hidden;
+    }
+
+        .notif-dropdown.hidden {
+            display: none;
+        }
+
+    .notif-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.2rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .notif-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .notif-mark-all {
+        background: none;
+        border: none;
+        font-size: 0.72rem;
+        color: var(--indigo);
+        cursor: pointer;
+        font-weight: 600;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .notif-list {
+        max-height: 320px;
+        overflow-y: auto;
+    }
+
+    .notif-loading {
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--text-light);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .notif-item {
+        padding: 0.9rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 0.8rem;
+        align-items: flex-start;
+        transition: background 0.15s;
+    }
+
+        .notif-item:hover {
+            background: var(--bg);
+        }
+
+        .notif-item.unread {
+            background: #f8f8ff;
+        }
+
+    .notif-av {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--indigo);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .notif-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notif-msg {
+        font-size: 0.78rem;
+        color: var(--text-dark);
+        line-height: 1.4;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+        .notif-msg strong {
+            color: var(--indigo);
+        }
+
+    .notif-time {
+        font-size: 0.68rem;
+        color: var(--text-light);
+        margin-top: 3px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .notif-actions {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+    }
+
+    .notif-btn-accept {
+        background: var(--teal);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        transition: opacity 0.2s;
+    }
+
+        .notif-btn-accept:hover {
+            opacity: 0.85;
+        }
+
+    .notif-btn-decline {
+        background: none;
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        transition: background 0.2s;
+    }
+
+        .notif-btn-decline:hover {
+            background: #fdf0ef;
+        }
+
+    .notif-empty {
+        padding: 2rem 1.2rem;
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--text-light);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+        .notif-empty i {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: var(--border);
+        }
+
+    .notif-footer {
+        padding: 0.8rem 1.2rem;
+        text-align: center;
+        border-top: 1px solid var(--border);
+    }
+
+        .notif-footer a {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--indigo);
+            text-decoration: none;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+</style>
+
+<script>
+    let notifLoaded = false;
+
+    // ── Toggle dropdown ───────────────────────────────────────────────────
+    function toggleNotif(e) {
+        e.stopPropagation();
+        const dropdown = document.getElementById('notifDropdown');
+        dropdown.classList.toggle('hidden');
+
+        if (!dropdown.classList.contains('hidden') && !notifLoaded) {
+            loadNotifications();
+        }
+    }
+
+    // Close when clicking outside
+    document.addEventListener('click', function (e) {
+        const wrapper = document.getElementById('notifWrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            document.getElementById('notifDropdown')?.classList.add('hidden');
+        }
+    });
+
+    // ── Load notifications via API ────────────────────────────────────────
+    async function loadNotifications() {
+        try {
+            const response = await fetch('/api/notifications');
+            if (!response.ok) return;
+
+            const data = await response.json();
+            notifLoaded = true;
+
+            const badge = document.getElementById('notifBadge');
+            const list  = document.getElementById('notifList');
+
+            if (data.count > 0) {
+                badge.textContent = data.count > 9 ? '9+' : data.count;
+                badge.classList.remove('hidden');
+            }
+
+            if (data.notifications.length === 0) {
+                list.innerHTML = `
+                    <div class="notif-empty">
+                        <i class="fa-solid fa-bell-slash"></i>
+                        No new notifications
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = data.notifications.map(n => `
+                <div class="notif-item unread" id="notif-${n.partnershipId}">
+                    <div class="notif-av">${n.initials}</div>
+                    <div class="notif-content">
+                        <div class="notif-msg">
+                            <strong>${n.senderName}</strong> sent you a study partner request.
+                        </div>
+                        <div class="notif-time">${n.timeAgo}</div>
+                        <div class="notif-actions">
+                            <button class="notif-btn-accept"
+                                    onclick="quickRespond(${n.partnershipId}, 'accept', this)">
+                                <i class="fa-solid fa-check"></i> Accept
+                            </button>
+                            <button class="notif-btn-decline"
+                                    onclick="quickRespond(${n.partnershipId}, 'decline', this)">
+                                <i class="fa-solid fa-xmark"></i> Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error('Failed to load notifications:', err);
+        }
+    }
+
+    // ── Quick accept/decline from dropdown ────────────────────────────────
+    async function quickRespond(partnershipId, action, btn) {
+        btn.disabled = true;
+        const token  = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+        const response = await fetch('/Requests?handler=Respond', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({ partnershipId, action })
+        });
+
+        if (response.ok) {
+            const item = document.getElementById('notif-' + partnershipId);
+            if (item) {
+                item.innerHTML = `
+                    <div class="notif-av" style="background:${action === 'accept' ? '#1abc9c' : '#aaa'}">
+                        <i class="fa-solid fa-${action === 'accept' ? 'check' : 'xmark'}"></i>
+                    </div>
+                    <div class="notif-content">
+                        <div class="notif-msg">
+                            Request ${action === 'accept' ? 'accepted' : 'declined'}.
+                            ${action === 'accept' ? '<a href="/CollaborateHome">Go to Collaborate</a>' : ''}
+                        </div>
+                    </div>`;
+            }
+
+            // Update badge count
+            const badge = document.getElementById('notifBadge');
+            const current = parseInt(badge.textContent) || 0;
+            if (current <= 1) {
+                badge.classList.add('hidden');
+            } else {
+                badge.textContent = current - 1;
+            }
+        } else {
+            btn.disabled = false;
+            alert('Could not process request. Please try again.');
+        }
+    }
+
+    // ── Mark all read ─────────────────────────────────────────────────────
+    function markAllRead() {
+        document.getElementById('notifBadge')?.classList.add('hidden');
+        document.getElementById('notifDropdown')?.classList.add('hidden');
+    }
+
+    // ── Auto-load badge count on page load ────────────────────────────────
+    (async function initBadge() {
+        try {
+            const response = await fetch('/api/notifications');
+            if (!response.ok) return;
+            const data = await response.json();
+            if (data.count > 0) {
+                const badge = document.getElementById('notifBadge');
+                badge.textContent = data.count > 9 ? '9+' : data.count;
+                badge.classList.remove('hidden');
+            }
+        } catch {}
+    })();
+</script>

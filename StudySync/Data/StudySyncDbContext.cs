@@ -20,6 +20,8 @@ namespace StudySync.Data
         public DbSet<Partnership> Partnerships { get; set; }
         public DbSet<PartnershipFeedback> PartnershipFeedbacks { get; set; }
         public DbSet<RecommendationCache> RecommendationCaches { get; set; }
+        public DbSet<CollaborationMessage> CollaborationMessages { get; set; }
+        public DbSet<StudySession> StudySessions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -173,6 +175,38 @@ namespace StudySync.Data
                 entity.HasOne(rc => rc.TargetUser)
                       .WithMany()
                       .HasForeignKey(rc => rc.TargetUserID)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // CollaborationMessages
+            modelBuilder.Entity<CollaborationMessage>(entity =>
+            {
+                entity.ToTable("CollaborationMessages");
+
+                entity.HasOne(cm => cm.Partnership)
+                      .WithMany()
+                      .HasForeignKey(cm => cm.PartnershipID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(cm => cm.Sender)
+                      .WithMany()
+                      .HasForeignKey(cm => cm.SenderUserID)
+                      .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // StudySessions
+            modelBuilder.Entity<StudySession>(entity =>
+            {
+                entity.ToTable("StudySessions");
+
+                entity.HasOne(ss => ss.Partnership)
+                      .WithMany()
+                      .HasForeignKey(ss => ss.PartnershipID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ss => ss.CreatedBy)
+                      .WithMany()
+                      .HasForeignKey(ss => ss.CreatedByUserID)
                       .OnDelete(DeleteBehavior.NoAction);
             });
         }

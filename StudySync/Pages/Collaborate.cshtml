@@ -1,0 +1,389 @@
+﻿@page "{partnershipId:int}"
+@model StudySync.Pages.CollaborateModel
+@{
+    ViewData["Title"] = "Collaborate";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Collaborate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/collaborate.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-book-open"></i> StudySync
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">COMPUTER SCIENCE DEPT.</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item">
+                    <i class="fa-solid fa-table-cells-large nav-icon"></i> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item">
+                    <i class="fa-solid fa-brain nav-icon"></i> AI MATCHES
+                </a>
+                <a href="/Requests" class="nav-item">
+                    <i class="fa-solid fa-bell nav-icon"></i> REQUESTS
+                </a>
+                <a href="/Collaborate/@Model.PartnershipId" class="nav-item active">
+                    <i class="fa-solid fa-users nav-icon"></i> COLLABORATE
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-chart-bar nav-icon"></i> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="btn-start-session">
+                    <i class="fa-solid fa-play"></i> Start Study Session
+                </a>
+                <a href="#" class="nav-item-sm">
+                    <i class="fa-solid fa-circle-question"></i> HELP CENTER
+                </a>
+                <a href="/Logout" class="nav-item-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT — Three column layout
+        ══════════════════════════════════════════ -->
+        <main class="collab-main">
+
+            @Html.AntiForgeryToken()
+
+            @if (Model.Partnership == null)
+            {
+                <div class="collab-error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h2>Partnership Not Found</h2>
+                    <p>This collaboration space does not exist or you do not have access.</p>
+                    <a href="/Dashboard" class="btn-back-dash">Back to Dashboard</a>
+                </div>
+            }
+            else
+            {
+                <!-- ── Partner list (left column) ── -->
+                <aside class="partners-list">
+                    <div class="partners-heading">
+                        <h3>My Study Partners</h3>
+                        <span class="partners-count">@Model.AllPartnerships.Count ACTIVE</span>
+                    </div>
+
+                    @foreach (var p in Model.AllPartnerships)
+                    {
+                        <a href="/Collaborate/@p.PartnershipId"
+                           class="partner-item @(p.PartnershipId == Model.PartnershipId ? "active-partner" : "")">
+                            <div class="partner-av">@p.Initials</div>
+                            <div class="partner-details">
+                                <div class="partner-name">@p.FullName</div>
+                                <div class="partner-preview">@p.LastMessage</div>
+                            </div>
+                            <div class="partner-score">@p.MatchScore%</div>
+                        </a>
+                    }
+                </aside>
+
+                <!-- ── Chat area (right column) ── -->
+                <div class="chat-area">
+
+                    <!-- Chat header -->
+                    <div class="chat-header">
+                        <div class="chat-header-left">
+                            <div class="chat-av">@Model.PartnerInitials</div>
+                            <div>
+                                <div class="chat-partner-name">@Model.PartnerName</div>
+                                <div class="chat-status">
+                                    <span class="online-dot"></span> Active now &bull;
+                                    @Model.PartnerRole
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="icon-btn" title="Voice call">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button class="icon-btn" title="Video call">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                            <a href="/Feedback/@Model.PartnershipId"
+                               class="icon-btn" title="Leave feedback">
+                                <i class="fa-solid fa-star"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Chat tabs -->
+                    <div class="chat-tabs">
+                        <button class="chat-tab active" onclick="switchChatTab('chat', this)">
+                            <i class="fa-solid fa-message"></i> CHAT
+                        </button>
+                        <button class="chat-tab" onclick="switchChatTab('notes', this)">
+                            <i class="fa-solid fa-note-sticky"></i> SHARED NOTES
+                        </button>
+                        <button class="chat-tab" onclick="switchChatTab('sessions', this)">
+                            <i class="fa-solid fa-calendar"></i> SESSIONS
+                        </button>
+                    </div>
+
+                    <!-- ── CHAT TAB ── -->
+                    <div id="tab-chat" class="chat-tab-panel">
+
+                        <!-- Messages -->
+                        <div class="messages-area" id="messagesArea">
+                            @if (Model.Messages.Count == 0)
+                            {
+                                <div class="no-messages">
+                                    <i class="fa-solid fa-comments"></i>
+                                    <p>No messages yet. Say hello to @Model.PartnerName!</p>
+                                </div>
+                            }
+                            else
+                            {
+                                var lastDate = "";
+                                foreach (var msg in Model.Messages)
+                                {
+                                    var msgDate = msg.SentAt.ToString("dddd, MMM dd").ToUpper();
+                                    if (msgDate != lastDate)
+                                    {
+                                        lastDate = msgDate;
+                                        <div class="date-divider">@msgDate</div>
+                                    }
+
+                                    <div class="message-bubble @(msg.IsOwn ? "own" : "theirs")">
+                                        <div class="bubble-content">@msg.Content</div>
+                                        <div class="bubble-time">@msg.SentAt.ToString("hh:mm tt")</div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <!-- Message input -->
+                        <div class="message-input-area">
+                            <button class="input-icon-btn" title="Attach file">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <input type="text" id="messageInput"
+                                   placeholder="Message @Model.PartnerName..."
+                                   onkeydown="if(event.key==='Enter') sendMessage()" />
+                            <button class="input-icon-btn" title="Emoji">
+                                <i class="fa-regular fa-face-smile"></i>
+                            </button>
+                            <button class="btn-send-msg" onclick="sendMessage()">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── SHARED NOTES TAB ── -->
+                    <div id="tab-notes" class="chat-tab-panel hidden">
+                        <div class="notes-area">
+                            <div class="notes-header">
+                                <h3>Shared Notes</h3>
+                                <button class="btn-save-notes" onclick="saveNotes()">
+                                    <i class="fa-solid fa-floppy-disk"></i> Save
+                                </button>
+                            </div>
+                            <textarea id="sharedNotes"
+                                  placeholder="Write shared notes here... Both partners can edit and view these notes."
+                                  rows="20">@Model.SharedNotes</textarea>
+                        </div>
+                    </div>
+
+                    <!-- ── SESSIONS TAB ── -->
+                    <div id="tab-sessions" class="chat-tab-panel hidden">
+                        <div class="sessions-area">
+                            <div class="sessions-header">
+                                <h3>Study Sessions</h3>
+                                <button class="btn-new-session" onclick="toggleNewSession()">
+                                    <i class="fa-solid fa-plus"></i> Schedule Session
+                                </button>
+                            </div>
+
+                            <!-- New session form -->
+                            <div id="newSessionForm" class="new-session-form hidden">
+                                <input type="text" id="sessionTitle"
+                                       placeholder="Session title e.g. Algorithms Deep Dive" />
+                                <input type="datetime-local" id="sessionDate" />
+                                <input type="number" id="sessionDuration"
+                                       placeholder="Duration (minutes)" min="15" max="240" />
+                                <button class="btn-create-session" onclick="createSession()">
+                                    <i class="fa-solid fa-calendar-plus"></i> Create Session
+                                </button>
+                            </div>
+
+                            @if (Model.Sessions.Count == 0)
+                            {
+                                <div class="no-sessions">
+                                    <i class="fa-solid fa-calendar-xmark"></i>
+                                    <p>No sessions scheduled yet.</p>
+                                </div>
+                            }
+                            else
+                            {
+                                foreach (var session in Model.Sessions)
+                                {
+                                    <div class="session-card">
+                                        <div class="session-date-box">
+                                            <span class="session-month">@session.ScheduledAt.ToString("MMM").ToUpper()</span>
+                                            <span class="session-day">@session.ScheduledAt.Day</span>
+                                        </div>
+                                        <div class="session-info">
+                                            <div class="session-title">@session.Title</div>
+                                            <div class="session-meta">
+                                                @session.ScheduledAt.ToString("dddd • h:mm tt") —
+                                                @((session.ScheduledAt.AddMinutes(session.DurationMinutes)).ToString("h:mm tt"))
+                                            </div>
+                                        </div>
+                                        <span class="session-status @(session.ScheduledAt > DateTime.Now ? "upcoming" : "past")">
+                                            @(session.ScheduledAt > DateTime.Now ? "Upcoming" : "Completed")
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </main>
+    </div>
+
+    <script>
+        const partnershipId = @Model.PartnershipId;
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+        // ── Scroll to bottom of messages ─────────────────────────────────────
+        window.onload = function () {
+            const area = document.getElementById('messagesArea');
+            if (area) area.scrollTop = area.scrollHeight;
+        };
+
+        // ── Chat tab switching ────────────────────────────────────────────────
+        function switchChatTab(name, btn) {
+            document.querySelectorAll('.chat-tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.remove('hidden');
+            btn.classList.add('active');
+        }
+
+        // ── Send message ──────────────────────────────────────────────────────
+        async function sendMessage() {
+            const input   = document.getElementById('messageInput');
+            const content = input.value.trim();
+            if (!content) return;
+
+            input.value = '';
+
+            const response = await fetch('/Collaborate/@Model.PartnershipId?handler=SendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ content })
+            });
+
+            if (response.ok) {
+                const area = document.getElementById('messagesArea');
+                const now  = new Date();
+                const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble own';
+                bubble.innerHTML = `<div class="bubble-content">${escapeHtml(content)}</div>
+                                    <div class="bubble-time">${timeStr}</div>`;
+                area.appendChild(bubble);
+                area.scrollTop = area.scrollHeight;
+            } else {
+                alert('Could not send message. Please try again.');
+                input.value = content;
+            }
+        }
+
+        // ── Save shared notes ─────────────────────────────────────────────────
+        async function saveNotes() {
+            const notes = document.getElementById('sharedNotes').value;
+
+            const response = await fetch('/Collaborate/@Model.PartnershipId?handler=SaveNotes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ notes })
+            });
+
+            if (response.ok) {
+                const btn = document.querySelector('.btn-save-notes');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+                setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save', 2000);
+            }
+        }
+
+        // ── New session form ──────────────────────────────────────────────────
+        function toggleNewSession() {
+            document.getElementById('newSessionForm').classList.toggle('hidden');
+        }
+
+        async function createSession() {
+            const title    = document.getElementById('sessionTitle').value.trim();
+            const date     = document.getElementById('sessionDate').value;
+            const duration = parseInt(document.getElementById('sessionDuration').value);
+
+            if (!title || !date || !duration) {
+                alert('Please fill in all session fields.');
+                return;
+            }
+
+            const response = await fetch('/Collaborate/@Model.PartnershipId?handler=CreateSession', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ title, scheduledAt: date, durationMinutes: duration })
+            });
+
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Could not create session. Please try again.');
+            }
+        }
+
+        // ── Helper ────────────────────────────────────────────────────────────
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+
+</body>
+</html>
+

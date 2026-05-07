@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StudySync.Data;
+using StudySync.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // ── Razor Pages & other services ────────────────────────────
 builder.Services.AddSingleton<StudySync.Services.JwtService>();
+builder.Services.AddHttpClient<StudySync.Services.MatchingEngineService>();
+builder.Services.AddScoped<StudySync.Services.MatchingEngineService>();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 

@@ -1,0 +1,510 @@
+﻿/* ============================================================
+   StudySync — Profile / Settings Page Stylesheet
+   ============================================================ */
+
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* ── Profile header card ── */
+.profile-header-card {
+    background: var(--indigo);
+    border-radius: var(--radius);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    color: white;
+}
+
+.profile-big-av {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    border: 3px solid rgba(255,255,255,0.4);
+}
+
+.profile-header-info {
+    flex: 1;
+    min-width: 180px;
+}
+
+    .profile-header-info h1 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.3rem;
+    }
+
+.profile-matric,
+.profile-email {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.75);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.2rem;
+}
+
+.profile-completion-bar {
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.completion-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 200px;
+}
+
+.completion-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 4px;
+    transition: width 0.5s;
+}
+
+/* Stats */
+.profile-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-val {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.05em;
+}
+
+/* ── Profile tabs ── */
+.profile-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+
+.ptab {
+    background: none;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+    .ptab:hover {
+        color: var(--text-dark);
+    }
+
+    .ptab.active {
+        color: var(--indigo);
+        border-bottom-color: var(--indigo);
+    }
+
+/* ── Tab panels ── */
+.ptab-panel {
+    display: block;
+}
+
+    .ptab-panel.hidden {
+        display: none;
+    }
+
+/* ── Settings card ── */
+.settings-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.settings-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-sub {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    margin-bottom: 1rem;
+}
+
+/* ── Form elements ── */
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+    .form-group label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: var(--text-mid);
+        margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.88rem;
+        color: var(--text-dark);
+        background: var(--bg);
+        outline: none;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        transition: border-color 0.2s;
+    }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--indigo);
+            background: var(--white);
+        }
+
+/* ── VARK options ── */
+.vark-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.vark-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .vark-opt input {
+        display: none;
+    }
+
+    .vark-opt.selected {
+        border-color: var(--indigo);
+        background: var(--indigo-light);
+    }
+
+    .vark-opt i {
+        font-size: 1.2rem;
+        color: var(--indigo);
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .vark-opt strong {
+        display: block;
+        font-size: 0.82rem;
+        color: var(--text-dark);
+    }
+
+    .vark-opt small {
+        font-size: 0.72rem;
+        color: var(--text-mid);
+        line-height: 1.4;
+    }
+
+/* ── Pace options ── */
+.pace-opts {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.pace-opt {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    transition: all 0.2s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+    .pace-opt input {
+        display: none;
+    }
+
+    .pace-opt.selected {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+    }
+
+/* ── Interests grid ── */
+.interests-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.interest-chip {
+    padding: 0.4rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--text-mid);
+    transition: all 0.15s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+    .interest-chip input {
+        display: none;
+    }
+
+    .interest-chip.selected {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+        font-weight: 600;
+    }
+
+/* ── Availability table ── */
+.avail-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+}
+
+.avail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .avail-table th {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        color: var(--text-mid);
+        padding: 0.4rem;
+        text-align: center;
+    }
+
+.slot-lbl {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    padding-right: 0.8rem;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.slot-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    margin: 3px auto;
+    font-size: 0.75rem;
+    transition: all 0.15s;
+}
+
+    .slot-cell.checked {
+        background: var(--indigo);
+        border-color: var(--indigo);
+        color: white;
+    }
+
+    .slot-cell input {
+        display: none;
+    }
+
+/* ── Save button ── */
+.btn-save {
+    background: var(--indigo);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+    .btn-save:hover {
+        background: var(--indigo-dark);
+    }
+
+/* ── Alerts ── */
+.alert {
+    padding: 0.85rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.alert-success {
+    background: #e8fdf5;
+    border: 1px solid #a8e6cf;
+    color: var(--teal);
+}
+
+.alert-error {
+    background: #fdf0ef;
+    border: 1px solid #f5c6c2;
+    color: #e74c3c;
+}
+
+/* ── Nav badge ── */
+.nav-badge {
+    background: #e74c3c;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 10px;
+    margin-left: auto;
+}
+
+/* ── Hamburger ── */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0.3rem;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 1;
+}
+
+/* ── Sidebar overlay ── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 99;
+}
+
+    .sidebar-overlay.hidden {
+        display: none;
+    }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+    }
+
+        .sidebar.sidebar-open {
+            left: 0;
+        }
+
+    .main-content {
+        margin-left: 0;
+        padding: 0 1rem 2rem;
+    }
+
+    .profile-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .vark-options {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-tabs {
+        overflow-x: auto;
+    }
+
+    .profile-stats {
+        gap: 1rem;
+    }
+}

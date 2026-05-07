@@ -11,17 +11,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StudySync — Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/dashboard.css" />
 </head>
 <body>
-
+    @Html.AntiForgeryToken()
+    
     <div class="app-layout">
-
         <!-- ══════════════════════════════════════════
              SIDEBAR
         ══════════════════════════════════════════ -->
         <aside class="sidebar">
-            <div class="sidebar-brand">&#9633; StudySync</div>
+            <div class="sidebar-brand"><i class="fas fa-cube"></i> StudySync</div>
 
             <div class="sidebar-profile">
                 <div class="profile-avatar">@Model.UserInitials</div>
@@ -33,28 +34,31 @@
 
             <nav class="sidebar-nav">
                 <a href="/Dashboard" class="nav-item active">
-                    <span class="nav-icon">&#9646;&#9646;</span> DASHBOARD
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span> DASHBOARD
                 </a>
                 <a href="/Matches" class="nav-item">
-                    <span class="nav-icon">&#9881;</span> AI MATCHES
+                    <span class="nav-icon"><i class="fas fa-brain"></i></span> AI MATCHES
+                </a>
+                <a href="/Requests" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-bell"></i></span> REQUESTS
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">&#9646;</span> FLASHCARDS
+                    <span class="nav-icon"><i class="fas fa-layer-group"></i></span> FLASHCARDS
+                </a>
+                <a href="/CollaborateHome" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-handshake"></i></span> COLLABORATE
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">&#128101;</span> COLLABORATE
-                </a>
-                <a href="#" class="nav-item">
-                    <span class="nav-icon">&#9998;</span> ANALYTICS
+                    <span class="nav-icon"><i class="fas fa-chart-bar"></i></span> ANALYTICS
                 </a>
             </nav>
 
             <div class="sidebar-bottom">
                 <a href="/Dashboard?handler=StartSession" class="btn-start-session">
-                    Start Study Session
+                    <i class="fas fa-play"></i> Start Study Session
                 </a>
-                <a href="#" class="nav-item-sm">&#63; HELP CENTER</a>
-                <a href="/Logout" class="nav-item-sm">&#8594; LOGOUT</a>
+                <a href="#" class="nav-item-sm"><i class="fas fa-question-circle"></i> HELP CENTER</a>
+                <a href="/Logout" class="nav-item-sm"><i class="fas fa-sign-out-alt"></i> LOGOUT</a>
             </div>
         </aside>
 
@@ -71,20 +75,20 @@
                     <span></span>
                 </button>
                 <div class="search-bar">
-                    <span>&#128269;</span>
+                    <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search resources or partners..." />
                 </div>
                 <div class="topbar-right">
-                    <button class="icon-btn">&#128276;</button>
-                    <button class="icon-btn">&#9881;</button>
-                    <div class="topbar-avatar">@Model.UserInitials</div>
+                    @await Html.PartialAsync("_Notifications")
+                    <button class="icon-btn"><i class="fas fa-cog"></i></button>
+                    <a href="/Profile" class="topbar-avatar">@Model.UserInitials</a>
                 </div>
             </div>
 
             <!-- Greeting banner -->
             <div class="greeting-banner">
                 <div>
-                    <h1>Good @Model.TimeOfDay, @Model.FirstName &#128075;</h1>
+                    <h1>Good @Model.TimeOfDay, @Model.FirstName <i class="fas fa-hand-paper"></i></h1>
                     <p>Your AI Matcher found <strong>@Model.NewMatchCount new potential study partners</strong> for you. Ready to collaborate?</p>
                 </div>
                 <a href="/Matches" class="btn-find-partner">Find Partner</a>
@@ -95,12 +99,12 @@
                 <div class="metric-card">
                     <div class="metric-label">ACTIVE PARTNERSHIPS</div>
                     <div class="metric-value">@Model.ActivePartnerships</div>
-                    <div class="metric-icon">&#128279;</div>
+                    <div class="metric-icon"><i class="fas fa-link"></i></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">MESSAGES</div>
                     <div class="metric-value">@Model.UnreadMessages</div>
-                    <div class="metric-icon">&#128172;</div>
+                    <div class="metric-icon"><i class="fas fa-envelope"></i></div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">PROFILE STATUS</div>
@@ -132,7 +136,7 @@
             @if (Model.TopMatches.Count == 0)
             {
                 <div class="empty-state">
-                    <p>&#9881; Your AI matches are being computed. Check back shortly or <a href="/Profile/Setup">complete your profile</a> to improve results.</p>
+                    <p><i class="fas fa-cog"></i> Your AI matches are being computed. Check back shortly or <a href="/Profile/Setup">complete your profile</a> to improve results.</p>
                 </div>
             }
             else
@@ -175,7 +179,7 @@
             @if (Model.ActiveCollaborations.Count == 0)
             {
                 <div class="empty-state">
-                    <p>&#128101; No active collaborations yet. Send a request to one of your matches to get started!</p>
+                    <p><i class="fas fa-users"></i> No active collaborations yet. Send a request to one of your matches to get started!</p>
                 </div>
             }
             else
@@ -192,12 +196,12 @@
                             <div class="collab-status">
                                 <div class="status-label">STATUS</div>
                                 <div class="status-value @(collab.IsActive ? "status-active" : "status-waiting")">
-                                    &#9679; @collab.Status
+                                    <i class="fas fa-circle"></i> @collab.Status
                                 </div>
                             </div>
                             <div class="collab-actions">
-                                <button class="icon-btn">&#128172;</button>
-                                <button class="icon-btn">&#128197;</button>
+                                <button class="icon-btn"><i class="fas fa-comment"></i></button>
+                                <button class="icon-btn"><i class="fas fa-calendar"></i></button>
                             </div>
                         </div>
                     }
@@ -237,21 +241,22 @@
         }
 
         async function sendRequest(targetUserId) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
             const response = await fetch('/Dashboard?handler=SendRequest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.cookie
-                        .split(';').find(c => c.trim().startsWith('XSRF'))?.split('=')[1] || ''
+                    'RequestVerificationToken': token
                 },
-                body: JSON.stringify({ targetUserId })
+                body: JSON.stringify({ targetUserId: targetUserId })
             });
 
             if (response.ok) {
-                alert('Partnership request sent!');
+                alert('Partnership request sent successfully!');
                 location.reload();
             } else {
-                alert('Could not send request. Please try again.');
+                alert('Could not send request. You may have already sent one.');
             }
         }
     </script>

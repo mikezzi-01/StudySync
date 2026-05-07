@@ -11,33 +11,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StudySync — Find Your Perfect Study Partner, Powered by AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/landing.css" />
 </head>
 <body>
 
-    <!-- ══════════════════════════════════════════
-         NAVBAR
-    ══════════════════════════════════════════ -->
-    <nav class="navbar">
-        <div class="nav-brand">StudySync</div>
-        <div class="nav-links">
-            <a href="#" class="nav-link active">Home</a>
-            <a href="#about" class="nav-link">About</a>
-            <a href="#how" class="nav-link">How It Works</a>
-            <a href="/Login" class="nav-link">Sign In</a>
-        </div>
-        <a href="/Register" class="btn-nav-cta">Get Started</a>
-        <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
-    </nav>
+    <header>
+        <!--NAVBAR-->
+        <nav class="navbar">
+            <div class="nav-brand">StudySync</div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#how" class="nav-link">How It Works</a>
+                <a href="/Login" class="nav-link">Sign In</a>
+            </div>
+            <a href="/Register" class="btn-nav-cta">Get Started</a>
+            <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </nav>
 
-    <!-- Mobile menu -->
-    <div class="mobile-menu hidden" id="mobileMenu">
-        <a href="#">Home</a>
-        <a href="#about">About</a>
-        <a href="#how">How It Works</a>
-        <a href="/Login">Sign In</a>
-        <a href="/Register" class="mobile-cta">Get Started</a>
-    </div>
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden" id="mobileMenu">
+            <a href="#">Home</a>
+            <a href="#about">About</a>
+            <a href="#how">How It Works</a>
+            <a href="/Login">Sign In</a>
+            <a href="/Register" class="mobile-cta">Get Started</a>
+        </div>
+    </header>
+    
 
     <!-- ══════════════════════════════════════════
          HERO SECTION
@@ -76,7 +78,7 @@
             <!-- Live match preview card -->
             <div class="preview-card">
                 <div class="preview-header">
-                    <div class="preview-icon">&#128269;</div>
+                    <div class="preview-icon"><i class="fas fa-search"></i></div>
                     <div>
                         <div class="preview-title">New Match Found!</div>
                         <div class="preview-sub">Based on your Python skills</div>
@@ -89,7 +91,7 @@
                         <div class="preview-name">Alex Chen</div>
                         <div class="preview-role">FULL-STACK DEV</div>
                     </div>
-                    <div class="preview-stars">&#9733;&#9733;&#9733;&#9733;</div>
+                    <div class="preview-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                 </div>
                 <div class="preview-tags-row">
                     <div>
@@ -121,17 +123,17 @@
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">&#10024;</div>
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
                 <h3>Smart Matching</h3>
                 <p>Our proprietary algorithms analyse study habits, skill levels, and personality traits to find your ideal academic peer.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">&#128187;</div>
+                <div class="feature-icon"><i class="fas fa-laptop"></i></div>
                 <h3>Built for CS Students</h3>
                 <p>Optimised for technical collaboration with support for code-sharing, repository integration, and project tracking.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">&#10022;</div>
+                <div class="feature-icon"><i class="fas fa-handshake"></i></div>
                 <h3>Real Collaboration Tools</h3>
                 <p>Integrated whiteboards, video chat, and shared flashcards ensure your study sessions are productive and focused.</p>
             </div>
@@ -173,7 +175,7 @@
          FOOTER
     ══════════════════════════════════════════ -->
     <footer class="footer">
-        <div class="footer-brand">&#9633; StudySync</div>
+        <div class="footer-brand"><i class="fas fa-cube"></i> StudySync</div>
         <p class="footer-tagline">Elevating the collaborative experience for the next generation of computer scientists through architectural logic and AI-driven precision.</p>
 
         <div class="footer-links">

@@ -1,0 +1,348 @@
+﻿@page
+@model StudySync.Pages.RequestsModel
+@{
+    ViewData["Title"] = "Partnership Requests";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — Partnership Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/requests.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-cube"></i> StudySync
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">COMPUTER SCIENCE DEPT.</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-brain"></i></span> AI MATCHES
+                </a>
+                <a href="/Requests" class="nav-item active">
+                    <span class="nav-icon"><i class="fas fa-bell"></i></span> REQUESTS
+                    @if (Model.IncomingRequests.Count > 0)
+                    {
+                        <span class="nav-badge">@Model.IncomingRequests.Count</span>
+                    }
+                </a>
+                <a href="/Flashcards" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-layer-group"></i></span> FLASHCARDS
+                </a>
+                <a href="/CollaborateHome" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-handshake"></i></span> COLLABORATE
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"><i class="fas fa-chart-bar"></i></span> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="btn-start-session">
+                    <i class="fas fa-play"></i> Start Study Session
+                </a>
+                <a href="#" class="nav-item-sm">
+                    <i class="fas fa-question-circle"></i> HELP CENTER
+                </a>
+                <a href="/Logout" class="nav-item-sm">
+                    <i class="fas fa-sign-out-alt"></i> LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search requests..." />
+                </div>
+                <div class="topbar-right">
+                    @await Html.PartialAsync("_Notifications")
+                    <button class="icon-btn"><i class="fas fa-cog"></i></button>
+                    <a href="/Profile" class="topbar-avatar">@Model.UserInitials</a>
+                </div>
+            </div>
+
+            <!-- Anti-forgery token for JS fetch calls -->
+            @Html.AntiForgeryToken()
+
+            <!-- Success / error messages -->
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success">
+                    <i class="fas fa-circle-check"></i> @Model.SuccessMessage
+                </div>
+            }
+
+            <!-- ── TABS ── -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('incoming', this)">
+                    Incoming
+                    @if (Model.IncomingRequests.Count > 0)
+                    {
+                        <span class="tab-count">@Model.IncomingRequests.Count</span>
+                    }
+                </button>
+                <button class="tab" onclick="switchTab('sent', this)">
+                    Sent
+                    @if (Model.SentRequests.Count > 0)
+                    {
+                        <span class="tab-count">@Model.SentRequests.Count</span>
+                    }
+                </button>
+                <button class="tab" onclick="switchTab('active', this)">
+                    Active
+                    @if (Model.ActivePartnerships.Count > 0)
+                    {
+                        <span class="tab-count">@Model.ActivePartnerships.Count</span>
+                    }
+                </button>
+            </div>
+
+            <!-- ── INCOMING REQUESTS ── -->
+            <div id="tab-incoming" class="tab-panel">
+                @if (Model.IncomingRequests.Count == 0)
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-inbox empty-icon"></i>
+                        <p>No incoming requests at the moment.</p>
+                        <span>When someone sends you a study request it will appear here.</span>
+                    </div>
+                }
+                else
+                {
+                    foreach (var req in Model.IncomingRequests)
+                    {
+                        <div class="request-card" id="card-@req.PartnershipId">
+                            <div class="request-avatar">@req.Initials</div>
+                            <div class="request-info">
+                                <div class="request-name">@req.FullName</div>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-graduation-cap"></i> @req.AcademicLevel Level</span>
+                                    <span><i class="fas fa-clock"></i> @req.TimeAgo</span>
+                                </div>
+                                <div class="request-tags">
+                                    @foreach (var tag in req.InterestTags.Take(4))
+                                    {
+                                        <span class="tag">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="request-score">
+                                <div class="score-badge @(req.MatchScore >= 70 ? "score-green" : "score-blue")">
+                                    @req.MatchScore%
+                                </div>
+                                <div class="score-label">MATCH</div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept"
+                                        onclick="respondToRequest(@req.PartnershipId, 'accept', this)">
+                                    <i class="fas fa-check"></i> Accept
+                                </button>
+                                <button class="btn-decline"
+                                        onclick="respondToRequest(@req.PartnershipId, 'decline', this)">
+                                    <i class="fas fa-xmark"></i> Decline
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- ── SENT REQUESTS ── -->
+            <div id="tab-sent" class="tab-panel hidden">
+                @if (Model.SentRequests.Count == 0)
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-paper-plane empty-icon"></i>
+                        <p>No sent requests yet.</p>
+                        <span>Visit <a href="/Matches">AI Matches</a> to send study requests.</span>
+                    </div>
+                }
+                else
+                {
+                    foreach (var req in Model.SentRequests)
+                    {
+                        <div class="request-card">
+                            <div class="request-avatar">@req.Initials</div>
+                            <div class="request-info">
+                                <div class="request-name">@req.FullName</div>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-graduation-cap"></i> @req.AcademicLevel Level</span>
+                                    <span><i class="fas fa-clock"></i> @req.TimeAgo</span>
+                                </div>
+                                <div class="request-tags">
+                                    @foreach (var tag in req.InterestTags.Take(4))
+                                    {
+                                        <span class="tag">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="request-score">
+                                <div class="score-badge @(req.MatchScore >= 70 ? "score-green" : "score-blue")">
+                                    @req.MatchScore%
+                                </div>
+                                <div class="score-label">MATCH</div>
+                            </div>
+                            <div class="request-status">
+                                <span class="status-pill status-pending">
+                                    <i class="fas fa-hourglass-half"></i> Pending
+                                </span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- ── ACTIVE PARTNERSHIPS ── -->
+            <div id="tab-active" class="tab-panel hidden">
+                @if (Model.ActivePartnerships.Count == 0)
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-users empty-icon"></i>
+                        <p>No active partnerships yet.</p>
+                        <span>Accept an incoming request to start collaborating.</span>
+                    </div>
+                }
+                else
+                {
+                    foreach (var partner in Model.ActivePartnerships)
+                    {
+                        <div class="request-card">
+                            <div class="request-avatar">@partner.Initials</div>
+                            <div class="request-info">
+                                <div class="request-name">@partner.FullName</div>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-graduation-cap"></i> @partner.AcademicLevel Level</span>
+                                    <span><i class="fas fa-calendar-check"></i> Since @partner.TimeAgo</span>
+                                </div>
+                                <div class="request-tags">
+                                    @foreach (var tag in partner.InterestTags.Take(4))
+                                    {
+                                        <span class="tag">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="request-score">
+                                <div class="score-badge score-green">@partner.MatchScore%</div>
+                                <div class="score-label">MATCH</div>
+                            </div>
+                            <div class="request-actions">
+                                <a href="/Collaborate/@partner.PartnershipId"
+                                   class="btn-collaborate">
+                                    <i class="fas fa-comments"></i> Collaborate
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ── Navigation toggle ────────────────────────────────────────────────
+        const navToggle = document.getElementById('navToggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+
+            // Close sidebar when a link is clicked
+            const navItems = document.querySelectorAll('.sidebar .nav-item, .sidebar .nav-item-sm, .sidebar .btn-start-session');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                });
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !navToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                    navToggle.classList.remove('active');
+                }
+            });
+        }
+
+        // ── Tab switching ─────────────────────────────────────────────────────
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.remove('hidden');
+            btn.classList.add('active');
+        }
+
+        // ── Accept / Decline request ──────────────────────────────────────────
+        async function respondToRequest(partnershipId, action, btn) {
+            btn.disabled = true;
+            const token  = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            const response = await fetch('/Requests?handler=Respond', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ partnershipId, action })
+            });
+
+            if (response.ok) {
+                const card = document.getElementById('card-' + partnershipId);
+                if (action === 'accept') {
+                    card.classList.add('card-accepted');
+                    card.querySelector('.request-actions').innerHTML =
+                        '<span class="status-pill status-active"><i class="fas fa-check-circle"></i> Accepted — Go to <a href="/Collaborate/' + partnershipId + '">Collaborate</a></span>';
+                } else {
+                    card.classList.add('card-declined');
+                    card.querySelector('.request-actions').innerHTML =
+                        '<span class="status-pill status-declined"><i class="fas fa-xmark-circle"></i> Declined</span>';
+                }
+            } else {
+                btn.disabled = false;
+                alert('Something went wrong. Please try again.');
+            }
+        }
+    </script>
+
+</body>
+</html>
+

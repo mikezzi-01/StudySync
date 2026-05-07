@@ -1,0 +1,500 @@
+﻿@page
+@model StudySync.Pages.ProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync — My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/profile.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-book-open"></i> StudySync
+            </div>
+
+            <div class="sidebar-profile">
+                <div class="profile-avatar">@Model.UserInitials</div>
+                <div>
+                    <div class="profile-name">@Model.FullName</div>
+                    <div class="profile-dept">COMPUTER SCIENCE DEPT.</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard" class="nav-item">
+                    <i class="fa-solid fa-table-cells-large nav-icon"></i> DASHBOARD
+                </a>
+                <a href="/Matches" class="nav-item">
+                    <i class="fa-solid fa-brain nav-icon"></i> AI MATCHES
+                </a>
+                <a href="/Requests" class="nav-item">
+                    <i class="fa-solid fa-bell nav-icon"></i> REQUESTS
+                    @if (Model.PendingRequestCount > 0)
+                    {
+                        <span class="nav-badge">@Model.PendingRequestCount</span>
+                    }
+                </a>
+                <a href="/CollaborateHome" class="nav-item">
+                    <i class="fa-solid fa-users nav-icon"></i> COLLABORATE
+                </a>
+                <a href="/Flashcards" class="nav-item">
+                    <i class="fa-solid fa-layer-group nav-icon"></i> FLASHCARDS
+                </a>
+                <a href="/Analytics" class="nav-item">
+                    <i class="fa-solid fa-chart-bar nav-icon"></i> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="btn-start-session">
+                    <i class="fa-solid fa-play"></i> Start Study Session
+                </a>
+                <a href="#" class="nav-item-sm">
+                    <i class="fa-solid fa-circle-question"></i> HELP CENTER
+                </a>
+                <a href="/Logout" class="nav-item-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay hidden" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search..." />
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    @await Html.PartialAsync("_Notifications")
+                    <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
+                    <div class="topbar-avatar">@Model.UserInitials</div>
+                </div>
+            </div>
+
+            @Html.AntiForgeryToken()
+
+            <!-- Success message -->
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success">
+                    <i class="fa-solid fa-circle-check"></i> @Model.SuccessMessage
+                </div>
+            }
+
+            <!-- Profile header card -->
+            <div class="profile-header-card">
+                <div class="profile-big-av">@Model.UserInitials</div>
+                <div class="profile-header-info">
+                    <h1>@Model.FullName</h1>
+                    <p class="profile-matric">
+                        <i class="fa-solid fa-id-card"></i> @Model.MatriculationNumber
+                    </p>
+                    <p class="profile-email">
+                        <i class="fa-solid fa-envelope"></i> @Model.Email
+                    </p>
+                    <div class="profile-completion-bar">
+                        <div class="completion-track">
+                            <div class="completion-fill"
+                                 style="width: @Model.ProfileCompletion%"></div>
+                        </div>
+                        <span>@Model.ProfileCompletion% Profile Complete</span>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div class="stat-val">@Model.ActivePartnerships</div>
+                        <div class="stat-label">Active Partners</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">@Model.TotalMatches</div>
+                        <div class="stat-label">AI Matches</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">@Model.AcademicLevel</div>
+                        <div class="stat-label">Level</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit tabs -->
+            <div class="profile-tabs">
+                <button class="ptab active" onclick="switchPTab('personal', this)">
+                    <i class="fa-solid fa-user"></i> Personal Info
+                </button>
+                <button class="ptab" onclick="switchPTab('learning', this)">
+                    <i class="fa-solid fa-brain"></i> Learning Style
+                </button>
+                <button class="ptab" onclick="switchPTab('interests', this)">
+                    <i class="fa-solid fa-tags"></i> Interests
+                </button>
+                <button class="ptab" onclick="switchPTab('availability', this)">
+                    <i class="fa-solid fa-calendar"></i> Availability
+                </button>
+                <button class="ptab" onclick="switchPTab('security', this)">
+                    <i class="fa-solid fa-lock"></i> Security
+                </button>
+            </div>
+
+            <!-- ── PERSONAL INFO TAB ── -->
+            <div id="ptab-personal" class="ptab-panel">
+                <form method="post" asp-page-handler="UpdatePersonal">
+                    @Html.AntiForgeryToken()
+                    <div class="settings-card">
+                        <h3 class="settings-title">Personal Information</h3>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>FIRST NAME</label>
+                                <input type="text" name="FirstName"
+                                       value="@Model.FirstName" />
+                            </div>
+                            <div class="form-group">
+                                <label>LAST NAME</label>
+                                <input type="text" name="LastName"
+                                       value="@Model.LastName" />
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>EMAIL ADDRESS</label>
+                                <input type="email" name="Email"
+                                       value="@Model.Email" />
+                            </div>
+                            <div class="form-group">
+                                <label>ACADEMIC LEVEL</label>
+                                <select name="AcademicLevel">
+                                    @foreach (var level in new[] { "100", "200", "300", "400" })
+                                    {
+                                        if (Model.AcademicLevel.ToString() == level)
+                                        {
+                                            <option value="@level" selected>@level Level</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@level">@level Level</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>PREFERRED STUDY ENVIRONMENT</label>
+                            <select name="PreferredEnvironment">
+                                @foreach (var opt in new[] { "Quiet Library", "Online/Virtual", "Coffee Shop", "Study Room (Group)", "Home" })
+                                {
+                                    if (Model.PreferredEnvironment == opt)
+                                    {
+                                        <option value="@opt" selected>@opt</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@opt">@opt</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>PRIMARY MOTIVATION</label>
+                            <select name="MotivationDriver">
+                                @foreach (var opt in new[] { "Exam Preparation", "Assignment Help", "Project Collaboration", "Skill Building", "General Study" })
+                                {
+                                    if (Model.MotivationDriver == opt)
+                                    {
+                                        <option value="@opt" selected>@opt</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@opt">@opt</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ── LEARNING STYLE TAB ── -->
+            <div id="ptab-learning" class="ptab-panel hidden">
+                <form method="post" asp-page-handler="UpdateLearning">
+                    @Html.AntiForgeryToken()
+                    <div class="settings-card">
+                        <h3 class="settings-title">Learning Style</h3>
+
+                        <div class="form-group">
+                            <label>VARK LEARNING STYLE</label>
+                            <div class="vark-options">
+                                @foreach (var v in new[] {
+                                                                ("Visual",      "fa-eye",        "Visual Learner",       "Diagrams, flowcharts, visual code"),
+                                                                ("Auditory",    "fa-headphones", "Auditory Learner",     "Lectures, podcasts, group discussion"),
+                                                                ("Kinesthetic", "fa-hand",       "Kinesthetic Learner",  "Coding challenges, hands-on practice"),
+                                                                ("ReadWrite",   "fa-book-open",  "Read & Write",         "Documentation, notes, technical blogs")
+                                                                })
+                                {
+                                    <label class="vark-opt @(Model.VarkStyle == v.Item1 ? "selected" : "")">
+                                        <input type="radio" name="VarkStyle" value="@v.Item1"
+                                               @(Model.VarkStyle == v.Item1 ? "checked" : "") />
+                                        <i class="fa-solid @v.Item2"></i>
+                                        <div>
+                                            <strong>@v.Item3</strong>
+                                            <small>@v.Item4</small>
+                                        </div>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>STUDY PACE</label>
+                            <div class="pace-opts">
+                                @foreach (var p in new[] { ("1", "Slow"), ("3", "Moderate"), ("5", "Fast") })
+                                {
+                                    <label class="pace-opt @(Model.StudyPace.ToString() == p.Item1 ? "selected" : "")">
+                                        <input type="radio" name="StudyPace" value="@p.Item1"
+                                               @(Model.StudyPace.ToString() == p.Item1 ? "checked" : "") />
+                                        @p.Item2
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>COLLABORATION MODE</label>
+                            <div class="pace-opts">
+                                @foreach (var c in new[] { ("1", "Solo"), ("2", "Pair"), ("3", "Small Group"), ("4", "Large Group") })
+                                {
+                                    <label class="pace-opt @(Model.CollaborationMode.ToString() == c.Item1 ? "selected" : "")">
+                                        <input type="radio" name="CollaborationMode" value="@c.Item1"
+                                               @(Model.CollaborationMode.ToString() == c.Item1 ? "checked" : "") />
+                                        @c.Item2
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>INTERACTION PREFERENCE</label>
+                            <div class="pace-opts">
+                                @foreach (var i in new[] { ("1", "Synchronous"), ("3", "Mixed"), ("2", "Asynchronous") })
+                                {
+                                    <label class="pace-opt @(Model.InteractionType.ToString() == i.Item1 ? "selected" : "")">
+                                        <input type="radio" name="InteractionType" value="@i.Item1"
+                                               @(Model.InteractionType.ToString() == i.Item1 ? "checked" : "") />
+                                        @i.Item2
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ── INTERESTS TAB ── -->
+            <div id="ptab-interests" class="ptab-panel hidden">
+                <form method="post" asp-page-handler="UpdateInterests">
+                    @Html.AntiForgeryToken()
+                    <div class="settings-card">
+                        <h3 class="settings-title">Academic Interests</h3>
+                        <p class="settings-sub">Select at least 3 topics you are interested in.</p>
+
+                        <div class="interests-grid">
+                            @foreach (var interest in Model.AllInterests)
+                            {
+                                var selected = Model.SelectedInterestIds.Contains(interest.InterestID);
+                                <label class="interest-chip @(selected ? "selected" : "")">
+                                    <input type="checkbox" name="SelectedInterestIds"
+                                           value="@interest.InterestID"
+                                           @(selected ? "checked" : "") />
+                                    @interest.InterestName
+                                </label>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Interests
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ── AVAILABILITY TAB ── -->
+            <div id="ptab-availability" class="ptab-panel hidden">
+                <form method="post" asp-page-handler="UpdateAvailability">
+                    @Html.AntiForgeryToken()
+                    <div class="settings-card">
+                        <h3 class="settings-title">Weekly Availability</h3>
+                        <p class="settings-sub">Select the time slots when you are available to study.</p>
+
+                        <div class="avail-table-wrap">
+                            <table class="avail-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        @foreach (var day in new[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" })
+                                        {
+                                            <th>@day</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var slotKeys = new[] { "MORN", "AFT", "EVE", "LATE" };
+                                        var slotLabels = new[] { "Morning\n08:00–12:00", "Afternoon\n12:00–17:00", "Evening\n17:00–21:00", "Late Night\n21:00–02:00" };
+                                        var days = new[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+                                    }
+                                    @for (int s = 0; s < slotKeys.Length; s++)
+                                    {
+                                        <tr>
+                                            <td class="slot-lbl">@Html.Raw(slotLabels[s].Replace("\n", "<br/>"))</td>
+                                            @for (int d = 0; d < days.Length; d++)
+                                            {
+                                                var key = $"{slotKeys[s]}_{days[d]}";
+                                                var isChecked = Model.AvailabilitySlots.Contains(key);
+                                                <td>
+                                                    <label class="slot-cell @(isChecked ? "checked" : "")">
+                                                        <input type="checkbox" name="AvailabilitySlots"
+                                                               value="@key"
+                                                               @(isChecked ? "checked" : "")
+                                                               onchange="this.closest('.slot-cell').classList.toggle('checked', this.checked)" />
+                                                        @if (isChecked)
+                                                        {
+                                                            <i class="fa-solid fa-check"></i>
+                                                        }
+                                                    </label>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Availability
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ── SECURITY TAB ── -->
+            <div id="ptab-security" class="ptab-panel hidden">
+                <form method="post" asp-page-handler="UpdatePassword">
+                    @Html.AntiForgeryToken()
+                    <div class="settings-card">
+                        <h3 class="settings-title">Change Password</h3>
+
+                        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                        {
+                            <div class="alert alert-error">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                @Model.ErrorMessage
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <label>CURRENT PASSWORD</label>
+                            <input type="password" name="CurrentPassword"
+                                   placeholder="••••••••" />
+                        </div>
+                        <div class="form-group">
+                            <label>NEW PASSWORD</label>
+                            <input type="password" name="NewPassword"
+                                   placeholder="••••••••" />
+                        </div>
+                        <div class="form-group">
+                            <label>CONFIRM NEW PASSWORD</label>
+                            <input type="password" name="ConfirmNewPassword"
+                                   placeholder="••••••••" />
+                        </div>
+
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-lock"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // ── Tab switching ─────────────────────────────────────────────────────
+        function switchPTab(name, btn) {
+            document.querySelectorAll('.ptab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+            document.getElementById('ptab-' + name).classList.remove('hidden');
+            btn.classList.add('active');
+        }
+
+        // ── VARK card highlight ───────────────────────────────────────────────
+        document.querySelectorAll('.vark-opt input').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.vark-opt').forEach(c => c.classList.remove('selected'));
+                radio.closest('.vark-opt').classList.add('selected');
+            });
+        });
+
+        // ── Pace/collab/interaction highlight ────────────────────────────────
+        document.querySelectorAll('.pace-opt input').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const group = radio.closest('.pace-opts');
+                group.querySelectorAll('.pace-opt').forEach(l => l.classList.remove('selected'));
+                radio.closest('.pace-opt').classList.add('selected');
+            });
+        });
+
+        // ── Interest chip highlight ───────────────────────────────────────────
+        document.querySelectorAll('.interest-chip input').forEach(cb => {
+            cb.addEventListener('change', () => {
+                cb.closest('.interest-chip').classList.toggle('selected', cb.checked);
+            });
+        });
+
+        // ── Sidebar toggle ────────────────────────────────────────────────────
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
+            document.getElementById('sidebarOverlay').classList.toggle('hidden');
+        }
+    </script>
+
+</body>
+</html>
+

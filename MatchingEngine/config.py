@@ -21,4 +21,4 @@ CACHE_EXPIRY_HOURS = 24
 TOP_N_MATCHES = 10
 
 # Minimum cosine similarity score to store (0.0 to 1.0)
-MIN_SCORE_THRESHOLD = 0.01
+MIN_SCORE_THRESHOLD = 0.30
