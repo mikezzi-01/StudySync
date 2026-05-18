@@ -8,12 +8,12 @@ using System.Security.Claims;
 
 namespace StudySync.Pages
 {
-    public class RequestsModel : PageModel
+    public class RequestsModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public RequestsModel(StudySyncDbContext db, JwtService jwt)
+        public RequestsModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -59,6 +59,12 @@ namespace StudySync.Pages
 
             FullName = $"{user.FirstName} {user.LastName}".Trim();
             UserInitials = $"{user.FirstName[0]}{(user.LastName?.Length > 0 ? user.LastName[0] : ' ')}".Trim().ToUpper();
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Requests";
+            ViewData["ShowSearch"] = true;
+            ViewData["SearchPlaceholder"] = "Search requests by name...";
+            ViewData["Title"] = "Partnership Requests";
 
             if (message == "accepted") SuccessMessage = "Partnership accepted! You can now collaborate.";
             if (message == "declined") SuccessMessage = "Request declined.";

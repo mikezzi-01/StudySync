@@ -8,12 +8,12 @@ using System.Security.Claims;
 
 namespace StudySync.Pages
 {
-    public class FeedbackModel : PageModel
+    public class FeedbackModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public FeedbackModel(StudySyncDbContext db, JwtService jwt)
+        public FeedbackModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -41,6 +41,11 @@ namespace StudySync.Pages
         {
             var userId = GetUserIdFromCookie();
             if (userId == null) return RedirectToPage("/Login");
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "";
+            ViewData["ShowSearch"] = false;
+            ViewData["Title"] = "Partnership Feedback";
 
             PartnershipId = partnershipId;
 

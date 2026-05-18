@@ -1,0 +1,247 @@
+﻿/* ============================================================
+   StudySync — Shared Layout Stylesheet
+   ============================================================ */
+
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* ── Sidebar profile link ── */
+.sidebar-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 2rem;
+    padding: 0.7rem 0.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+    .sidebar-profile-link:hover {
+        background: var(--bg);
+    }
+
+    .sidebar-profile-link .profile-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--indigo);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .sidebar-profile-link .profile-name {
+        font-weight: 700;
+        font-size: 0.88rem;
+        color: var(--indigo);
+    }
+
+    .sidebar-profile-link .profile-dept {
+        font-size: 0.68rem;
+        color: var(--text-light);
+        letter-spacing: 0.05em;
+    }
+
+.sidebar-profile-arrow {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-light);
+    flex-shrink: 0;
+}
+
+/* ── Topbar left ── */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 1;
+}
+
+/* ── Hamburger button ── */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0.3rem;
+    flex-shrink: 0;
+}
+
+/* ── Topbar avatar as link ── */
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--indigo);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+
+    .topbar-avatar:hover {
+        opacity: 0.85;
+    }
+
+/* ── Settings dropdown ── */
+.settings-wrapper {
+    position: relative;
+}
+
+.settings-btn {
+    position: relative;
+}
+
+.settings-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 200px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    z-index: 200;
+    overflow: hidden;
+    padding: 0.4rem 0;
+}
+
+    .settings-dropdown.hidden {
+        display: none;
+    }
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: background 0.15s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+    .settings-item:hover {
+        background: var(--bg);
+    }
+
+    .settings-item i {
+        color: var(--indigo);
+        width: 16px;
+        text-align: center;
+    }
+
+.settings-item-danger {
+    color: #e74c3c;
+}
+
+    .settings-item-danger i {
+        color: #e74c3c;
+    }
+
+    .settings-item-danger:hover {
+        background: #fdf0ef;
+    }
+
+.settings-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.3rem 0;
+}
+
+/* ── Sidebar overlay ── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 99;
+}
+
+    .sidebar-overlay.hidden {
+        display: none;
+    }
+
+/* ── Nav badge ── */
+.nav-badge {
+    background: #e74c3c;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 10px;
+    margin-left: auto;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+    }
+
+        .sidebar.sidebar-open {
+            left: 0;
+        }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 1rem 2rem;
+        max-width: 100vw;
+    }
+
+    .search-bar {
+        max-width: 100%;
+        flex: 1;
+    }
+
+    .topbar {
+        padding: 0.8rem 0;
+    }
+
+    .settings-dropdown {
+        right: -40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar-right {
+        gap: 0.3rem;
+    }
+
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+}

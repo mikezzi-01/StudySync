@@ -8,13 +8,13 @@ using System.Security.Claims;
 
 namespace StudySync.Pages
 {
-    public class ProfileModel : PageModel
+    public class ProfileModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
         private readonly MatchingEngineService _engine;
 
-        public ProfileModel(StudySyncDbContext db, JwtService jwt)
+        public ProfileModel(StudySyncDbContext db, JwtService jwt): base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -123,6 +123,11 @@ namespace StudySync.Pages
         {
             var userId = GetUserIdFromCookie();
             if (userId == null) return RedirectToPage("/Login");
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Profile";
+            ViewData["ShowSearch"] = false;
+            ViewData["Title"] = "My Profile";
 
             await LoadPageDataAsync(userId.Value);
 

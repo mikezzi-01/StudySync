@@ -9,12 +9,12 @@ using System.Text.Json;
 
 namespace StudySync.Pages
 {
-    public class MatchesModel : PageModel
+    public class MatchesModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public MatchesModel(StudySyncDbContext db, JwtService jwt)
+        public MatchesModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -50,6 +50,12 @@ namespace StudySync.Pages
 
             FullName = $"{user.FirstName} {user.LastName}".Trim();
             UserInitials = $"{user.FirstName[0]}{(user.LastName?.Length > 0 ? user.LastName[0] : ' ')}".Trim().ToUpper();
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Matches";
+            ViewData["ShowSearch"] = true;
+            ViewData["SearchPlaceholder"] = "Search partners by name...";
+            ViewData["Title"] = "AI Matches";
 
             // Load all interests for filter panel
             AllInterests = await _db.Interests

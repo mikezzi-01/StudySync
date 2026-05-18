@@ -42,12 +42,12 @@ namespace StudySync.Pages
     }
 
     // ── Page model ────────────────────────────────────────────────────────
-    public class CollaborateModel : PageModel
+    public class CollaborateModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public CollaborateModel(StudySyncDbContext db, JwtService jwt)
+        public CollaborateModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -93,6 +93,11 @@ namespace StudySync.Pages
 
             FullName = $"{user.FirstName} {user.LastName}".Trim();
             UserInitials = MakeInitials(user.FirstName, user.LastName);
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Collaborate";
+            ViewData["ShowSearch"] = false;
+            ViewData["Title"] = "Collaborate";
 
             // Load this specific partnership
             Partnership = await _db.Partnerships

@@ -1,51 +1,194 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var activePage = ViewData["ActivePage"]?.ToString() ?? "";
+    var showSearch = ViewData["ShowSearch"] as bool? ?? false;
+    var searchPlaceholder = ViewData["SearchPlaceholder"]?.ToString() ?? "Search...";
+    var userInitials = ViewData["UserInitials"]?.ToString() ?? "?";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Scholar";
+    var pendingCount = ViewData["PendingCount"] as int? ?? 0;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StudySync</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudySync.styles.css" asp-append-version="true" />
+    <title>StudySync — @ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+    <link rel="stylesheet" href="~/css/layout.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">StudySync</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+    <div class="app-layout">
+
+        <!-- ══════════════════════════════════════════
+             SIDEBAR
+        ══════════════════════════════════════════ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-book-open"></i> StudySync
+            </div>
+
+            <!-- Profile — clickable, goes to /Profile -->
+            <a href="/Profile" class="sidebar-profile-link">
+                <div class="profile-avatar">@userInitials</div>
+                <div>
+                    <div class="profile-name">@fullName</div>
+                    <div class="profile-dept">CS DEPT.</div>
+                </div>
+                <i class="fa-solid fa-chevron-right sidebar-profile-arrow"></i>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="/Dashboard"
+                   class="nav-item @(activePage == "Dashboard" ? "active" : "")">
+                    <i class="fa-solid fa-chart-line nav-icon"></i> DASHBOARD
+                </a>
+                <a href="/Matches"
+                   class="nav-item @(activePage == "Matches" ? "active" : "")">
+                    <i class="fa-solid fa-brain nav-icon"></i> AI MATCHES
+                </a>
+                <a href="/Requests"
+                   class="nav-item @(activePage == "Requests" ? "active" : "")">
+                    <i class="fa-solid fa-bell nav-icon"></i> REQUESTS
+                    @if (pendingCount > 0)
+                    {
+                        <span class="nav-badge">@pendingCount</span>
+                    }
+                </a>
+                <a href="/CollaborateHome"
+                   class="nav-item @(activePage == "Collaborate" ? "active" : "")">
+                    <i class="fa-solid fa-users nav-icon"></i> COLLABORATE
+                </a>
+                <a href="/Flashcards"
+                   class="nav-item @(activePage == "Flashcards" ? "active" : "")">
+                    <i class="fa-solid fa-layer-group nav-icon"></i> FLASHCARDS
+                </a>
+                <a href="/Analytics"
+                   class="nav-item @(activePage == "Analytics" ? "active" : "")">
+                    <i class="fa-solid fa-chart-bar nav-icon"></i> ANALYTICS
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="/CollaborateHome" class="btn-start-session">
+                    <i class="fa-solid fa-play"></i> Start Study Session
+                </a>
+                <a href="/HelpCenter" class="nav-item-sm">
+                    <i class="fa-solid fa-circle-question"></i> HELP CENTER
+                </a>
+                <a href="/Logout" class="nav-item-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </a>
+            </div>
+        </aside>
+
+        <!-- Sidebar overlay (mobile) -->
+        <div class="sidebar-overlay hidden" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- ══════════════════════════════════════════
+             MAIN CONTENT
+        ══════════════════════════════════════════ -->
+        <main class="main-content">
+
+            <!-- Top bar -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <!-- Hamburger (mobile only) -->
+                    <button class="hamburger-btn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <!-- Conditional search bar -->
+                    @if (showSearch)
+                    {
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text"
+                                   id="globalSearchInput"
+                                   placeholder="@searchPlaceholder"
+                                   oninput="handleSearch(this.value)" />
+                        </div>
+                    }
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Notifications -->
+                    @await Html.PartialAsync("_Notifications")
+
+                    <!-- Settings dropdown -->
+                    <div class="settings-wrapper" id="settingsWrapper">
+                        <button class="icon-btn settings-btn"
+                                onclick="toggleSettings(event)"
+                                title="Settings">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                        <div class="settings-dropdown hidden" id="settingsDropdown">
+                            <a href="/Profile" class="settings-item">
+                                <i class="fa-solid fa-user-pen"></i>
+                                Edit Profile
+                            </a>
+                            <a href="/HelpCenter" class="settings-item">
+                                <i class="fa-solid fa-circle-question"></i>
+                                Help Center
+                            </a>
+                            <div class="settings-divider"></div>
+                            <a href="/Logout" class="settings-item settings-item-danger">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Profile avatar -->
+                    <a href="/Profile" class="topbar-avatar" title="My Profile">
+                        @userInitials
+                    </a>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+            <!-- Page content -->
             @RenderBody()
+
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - StudySync - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
+    <!-- ══════════════════════════════════════════
+         SHARED SCRIPTS
+    ══════════════════════════════════════════ -->
+    <script>
+        // ── Sidebar toggle (mobile) ───────────────────────────────────────────
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
+            document.getElementById('sidebarOverlay').classList.toggle('hidden');
+        }
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+        // ── Settings dropdown ─────────────────────────────────────────────────
+        function toggleSettings(e) {
+            e.stopPropagation();
+            document.getElementById('settingsDropdown').classList.toggle('hidden');
+            // Close notifications if open
+            document.getElementById('notifDropdown')?.classList.add('hidden');
+        }
+
+        // Close settings when clicking outside
+        document.addEventListener('click', function (e) {
+            const wrapper = document.getElementById('settingsWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                document.getElementById('settingsDropdown')?.classList.add('hidden');
+            }
+        });
+
+        // ── Search dispatcher ─────────────────────────────────────────────────
+        // Each page defines its own handleSearch(query) function.
+        // This is a safe fallback in case a page forgets to define it.
+        if (typeof handleSearch === 'undefined') {
+            function handleSearch(query) {}
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

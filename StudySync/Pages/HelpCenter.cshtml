@@ -1,0 +1,440 @@
+﻿@page
+@model StudySync.Pages.HelpCenterModel
+@{
+    ViewData["Title"] = "Help Center";
+    ViewData["ActivePage"] = "HelpCenter";
+    ViewData["ShowSearch"] = false;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/helpcenter.css" />
+}
+
+<!-- Page heading -->
+<div class="hc-heading">
+    <div>
+        <h1><i class="fa-solid fa-circle-question"></i> Help Center</h1>
+        <p>Everything you need to know about using StudySync effectively.</p>
+    </div>
+</div>
+
+<!-- Quick navigation -->
+<div class="hc-quicknav">
+    <a href="#getting-started" class="hc-quicknav-item">
+        <i class="fa-solid fa-rocket"></i>
+        <span>Getting Started</span>
+    </a>
+    <a href="#ai-matching" class="hc-quicknav-item">
+        <i class="fa-solid fa-brain"></i>
+        <span>AI Matching</span>
+    </a>
+    <a href="#partnerships" class="hc-quicknav-item">
+        <i class="fa-solid fa-handshake"></i>
+        <span>Partnerships</span>
+    </a>
+    <a href="#collaborate" class="hc-quicknav-item">
+        <i class="fa-solid fa-users"></i>
+        <span>Collaborate</span>
+    </a>
+    <a href="#flashcards" class="hc-quicknav-item">
+        <i class="fa-solid fa-layer-group"></i>
+        <span>Flashcards</span>
+    </a>
+    <a href="#analytics" class="hc-quicknav-item">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Analytics</span>
+    </a>
+    <a href="#profile" class="hc-quicknav-item">
+        <i class="fa-solid fa-user-pen"></i>
+        <span>Profile</span>
+    </a>
+    <a href="#security" class="hc-quicknav-item">
+        <i class="fa-solid fa-lock"></i>
+        <span>Security</span>
+    </a>
+</div>
+
+<!-- ── GETTING STARTED ── -->
+<section class="hc-section" id="getting-started">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-rocket"></i>
+        <h2>Getting Started</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>What is StudySync?</h3>
+        <p>
+            StudySync is an AI-powered study partner matching platform built specifically for
+            Computer Science students. The system analyses your learning style, academic
+            interests, study habits, and availability to connect you with the most compatible
+            study partners in your institution.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I create an account?</h3>
+        <p>
+            To create an account, click <strong>Get Started</strong> on the landing page or
+            navigate to <strong>/Register</strong>. You will need to provide your full name,
+            matriculation number (in the format FOC/22/000001), institutional email address,
+            academic level, and a secure password. Once your account is created, you will be
+            directed to the profile setup wizard.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>What is the Profile Setup Wizard?</h3>
+        <p>
+            The profile setup wizard is a five-step onboarding process that collects the
+            information the AI matching engine needs to find your best study partners.
+            The five steps are:
+        </p>
+        <ul class="hc-list">
+            <li><strong>Step 1 — Personal Info:</strong> Your preferred study environment and primary academic motivation.</li>
+            <li><strong>Step 2 — Learning Style:</strong> Your VARK learning preference (Visual, Auditory, Kinesthetic, or Read/Write) and study pace.</li>
+            <li><strong>Step 3 — Study Habits:</strong> Your study consistency, collaboration mode preference, and interaction style.</li>
+            <li><strong>Step 4 — Interests:</strong> The CS topics you are currently studying or interested in.</li>
+            <li><strong>Step 5 — Availability:</strong> The days and time slots when you are available to study each week.</li>
+        </ul>
+        <p>
+            Completing all five steps results in a 100% profile completion score and ensures
+            the AI engine can compute your best possible matches immediately after setup.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Why is my profile completion less than 100%?</h3>
+        <p>
+            Profile completion is calculated based on how many of the five setup steps you
+            have completed. If you skipped any steps during the initial setup, navigate to
+            <strong>My Profile</strong> (click your avatar at the top right) and complete the
+            missing sections using the tabs provided.
+        </p>
+    </div>
+</section>
+
+<!-- ── AI MATCHING ── -->
+<section class="hc-section" id="ai-matching">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-brain"></i>
+        <h2>AI Matching</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How does the AI matching work?</h3>
+        <p>
+            StudySync uses a cosine similarity algorithm to compute a compatibility score
+            between every pair of registered students. Each student's profile is converted
+            into a numerical feature vector that captures six dimensions of compatibility:
+        </p>
+        <ul class="hc-list">
+            <li><strong>VARK Learning Style</strong> — how you prefer to absorb information (weight: 25%)</li>
+            <li><strong>Academic Interests</strong> — the CS topics you have selected (weight: 30%)</li>
+            <li><strong>Study Pace</strong> — how quickly you move through material (weight: 15%)</li>
+            <li><strong>Collaboration Mode</strong> — whether you prefer solo, pair, or group work (weight: 10%)</li>
+            <li><strong>Interaction Type</strong> — synchronous, asynchronous, or mixed sessions (weight: 10%)</li>
+            <li><strong>Availability Overlap</strong> — how many of your free time slots align (weight: 10%)</li>
+        </ul>
+        <p>
+            The higher the cosine similarity score between two students, the higher their
+            match percentage displayed on the AI Matches page.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>When are matches computed?</h3>
+        <p>
+            Matches are computed immediately after you complete your profile setup for the
+            first time. The system also recomputes your matches whenever you update your
+            profile. Additionally, the matching engine runs a full recomputation for all
+            users every 24 hours to account for new registrations.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>What does the match percentage mean?</h3>
+        <p>
+            The match percentage is derived from the cosine similarity score between your
+            profile vector and another student's profile vector. A score of 100% would
+            represent a perfect overlap across all six dimensions. In practice, scores
+            between 60% and 90% represent strong compatibility. Scores below 30% are
+            filtered out and will not appear in your match suggestions.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Why do I have no matches?</h3>
+        <p>
+            This can occur for two reasons. First, your profile may be incomplete — ensure
+            your profile completion is at least 60% for the matching engine to include you
+            in computations. Second, there may not yet be enough registered users with
+            overlapping profiles. As more students join the platform, your match list will
+            grow. You can use the filter panel on the AI Matches page to lower the minimum
+            match score threshold if needed.
+        </p>
+    </div>
+</section>
+
+<!-- ── PARTNERSHIPS ── -->
+<section class="hc-section" id="partnerships">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-handshake"></i>
+        <h2>Partnership Requests</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I send a partnership request?</h3>
+        <p>
+            Navigate to <strong>AI Matches</strong> in the sidebar. Browse through your
+            recommended partners and click <strong>Send Request</strong> on any partner card.
+            You can also send a request from the detail overlay that appears when you click
+            on a partner card. The request will appear in the recipient's Requests page
+            immediately.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I accept or decline a request?</h3>
+        <p>
+            Navigate to <strong>Requests</strong> in the sidebar. Under the
+            <strong>Incoming Requests</strong> tab, you will see all pending requests sent
+            to you. Click <strong>Accept</strong> to begin a collaboration or
+            <strong>Decline</strong> to archive the request. You can also accept or decline
+            directly from the notification bell dropdown at the top of any page.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>What happens after I accept a request?</h3>
+        <p>
+            Once a request is accepted, a partnership is created and both users gain access
+            to a shared collaboration workspace. The partnership will appear in the
+            <strong>Active Partnerships</strong> tab under Requests and on the
+            <strong>Collaborate</strong> page.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Can I send a request to someone who is not in my match list?</h3>
+        <p>
+            Currently, partnership requests can only be sent to users who appear in your
+            AI-generated match list. This ensures that all partnerships are built on a
+            foundation of genuine academic compatibility.
+        </p>
+    </div>
+</section>
+
+<!-- ── COLLABORATE ── -->
+<section class="hc-section" id="collaborate">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-users"></i>
+        <h2>Collaboration Workspace</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I access the collaboration workspace?</h3>
+        <p>
+            Click <strong>Collaborate</strong> in the sidebar to view all your active
+            partnerships. Click <strong>Open Workspace</strong> on any partnership card
+            to enter the dedicated collaboration space for that partner.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>What can I do in the workspace?</h3>
+        <p>The collaboration workspace has three sections accessible via the tabs at the top:</p>
+        <ul class="hc-list">
+            <li><strong>Chat</strong> — Send and receive messages with your study partner in real time. Files can also be referenced in conversation.</li>
+            <li><strong>Shared Notes</strong> — A collaborative text area where both partners can write, edit, and save study notes. Click Save to persist your notes.</li>
+            <li><strong>Sessions</strong> — Schedule upcoming study sessions by providing a title, date, time, and duration. All scheduled sessions appear in the sessions list with their status.</li>
+        </ul>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I leave feedback for a partner?</h3>
+        <p>
+            Inside the collaboration workspace, click the star icon in the top-right corner
+            of the chat header to open the feedback form for that partnership. You can rate
+            your overall experience, as well as specific dimensions such as learning style
+            alignment, communication quality, and technical proficiency. Your feedback is
+            used by the AI engine to improve future match recommendations.
+        </p>
+    </div>
+</section>
+
+<!-- ── FLASHCARDS ── -->
+<section class="hc-section" id="flashcards">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-layer-group"></i>
+        <h2>Flashcards</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I create a flashcard deck?</h3>
+        <p>
+            Navigate to <strong>Flashcards</strong> in the sidebar and click
+            <strong>New Deck</strong>. Provide a deck title and an optional topic or
+            category, then click <strong>Create Deck</strong>. Your new deck will appear
+            in the deck grid immediately.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I add cards to a deck?</h3>
+        <p>
+            Click the <strong>Add Card</strong> button on any deck card. A modal will
+            appear asking for a question (the front of the card) and an answer (the back).
+            Fill in both fields and click <strong>Add Card</strong>. You can add as many
+            cards to a deck as you need.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How does study mode work?</h3>
+        <p>
+            Click <strong>Study</strong> on any deck to enter study mode. Each card is
+            displayed with the question on the front. Click the card to flip it and reveal
+            the answer. After reviewing the answer, three options appear:
+        </p>
+        <ul class="hc-list">
+            <li><strong>Still Learning</strong> — marks the card as not yet mastered and continues.</li>
+            <li><strong>Skip</strong> — moves to the next card without recording a result.</li>
+            <li><strong>Got It</strong> — marks the card as mastered and continues.</li>
+        </ul>
+        <p>
+            At the end of the session, a summary shows how many cards you answered
+            correctly. The progress bar on each deck card reflects the percentage of
+            mastered cards.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Can I delete a deck?</h3>
+        <p>
+            Yes. Click the trash icon on any deck card and confirm the deletion. Note that
+            deleting a deck permanently removes all cards within it. This action cannot
+            be undone.
+        </p>
+    </div>
+</section>
+
+<!-- ── ANALYTICS ── -->
+<section class="hc-section" id="analytics">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-chart-bar"></i>
+        <h2>Analytics</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>What does the Analytics page show?</h3>
+        <p>
+            The Analytics page provides a personalised overview of your activity on
+            StudySync. It displays six summary metrics at the top: total partnerships,
+            active partnerships, AI match suggestions, messages sent, study sessions
+            scheduled, and your average feedback rating received from partners.
+        </p>
+        <p>
+            Below the metrics, four detailed sections provide deeper insight:
+        </p>
+        <ul class="hc-list">
+            <li><strong>Profile Completion</strong> — a visual breakdown of how complete each section of your profile is.</li>
+            <li><strong>Learning Style Profile</strong> — a bar chart showing your VARK score distribution and your study preferences.</li>
+            <li><strong>Academic Interests</strong> — all the CS topics you have selected displayed as tags.</li>
+            <li><strong>Partnership History</strong> — a list of your recent partnerships with their status and match scores.</li>
+            <li><strong>Top AI Match Scores</strong> — a ranked list of your highest-scoring AI-generated recommendations.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ── PROFILE ── -->
+<section class="hc-section" id="profile">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-user-pen"></i>
+        <h2>Profile &amp; Settings</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I edit my profile?</h3>
+        <p>
+            Click your avatar (the circle with your initials) in the top-right corner of
+            any page, or click your profile in the sidebar. This takes you to the
+            <strong>My Profile</strong> page. Five tabs allow you to update different
+            sections of your profile: Personal Info, Learning Style, Interests,
+            Availability, and Security.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Will updating my profile affect my matches?</h3>
+        <p>
+            Yes. Every time you save changes to your profile, the AI matching engine
+            automatically recomputes your matches to reflect your updated preferences.
+            Your new match list will be available on the AI Matches page within a few
+            seconds of saving.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>Can I change my matriculation number or email?</h3>
+        <p>
+            Your email address can be updated from the Personal Info tab on the Profile
+            page. Your matriculation number is set at registration and cannot be changed
+            after account creation. If you believe your matriculation number was entered
+            incorrectly, please contact your system administrator.
+        </p>
+    </div>
+</section>
+
+<!-- ── SECURITY ── -->
+<section class="hc-section" id="security">
+    <div class="hc-section-header">
+        <i class="fa-solid fa-lock"></i>
+        <h2>Security</h2>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I change my password?</h3>
+        <p>
+            Navigate to <strong>My Profile</strong> and click the <strong>Security</strong>
+            tab. Enter your current password, then your new password twice to confirm.
+            Your new password must be at least 8 characters long. Click
+            <strong>Update Password</strong> to save the change.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How is my data protected?</h3>
+        <p>
+            All passwords are hashed using the BCrypt algorithm before being stored in the
+            database — your plain-text password is never saved anywhere in the system.
+            Authentication is handled using JSON Web Tokens (JWT) stored in secure,
+            HTTP-only cookies, which prevents them from being accessed by client-side
+            scripts. All communication between the browser and the server takes place over
+            HTTPS.
+        </p>
+    </div>
+
+    <div class="hc-card">
+        <h3>How do I sign out?</h3>
+        <p>
+            Click the <strong>Logout</strong> link at the bottom of the sidebar, or click
+            the settings gear icon at the top right and select <strong>Sign Out</strong>.
+            This clears your session cookie and redirects you to the login page.
+        </p>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Smooth scroll for quick nav links
+        document.querySelectorAll('.hc-quicknav-item').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+}

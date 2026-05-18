@@ -22,6 +22,8 @@ namespace StudySync.Data
         public DbSet<RecommendationCache> RecommendationCaches { get; set; }
         public DbSet<CollaborationMessage> CollaborationMessages { get; set; }
         public DbSet<StudySession> StudySessions { get; set; }
+        public DbSet<FlashcardDeck> FlashcardDecks { get; set; }
+        public DbSet<FlashcardItem> FlashcardItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -208,6 +210,28 @@ namespace StudySync.Data
                       .WithMany()
                       .HasForeignKey(ss => ss.CreatedByUserID)
                       .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // FlashcardDecks
+            modelBuilder.Entity<FlashcardDeck>(entity =>
+            {
+                entity.ToTable("FlashcardDecks");
+
+                entity.HasOne(fd => fd.User)
+                      .WithMany()
+                      .HasForeignKey(fd => fd.UserID)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // FlashcardItems
+            modelBuilder.Entity<FlashcardItem>(entity =>
+            {
+                entity.ToTable("FlashcardItems");
+
+                entity.HasOne(fi => fi.Deck)
+                      .WithMany(fd => fd.Items)
+                      .HasForeignKey(fi => fi.DeckID)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

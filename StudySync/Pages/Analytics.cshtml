@@ -1,4 +1,259 @@
 ﻿@page
 @model StudySync.Pages.AnalyticsModel
 @{
+    ViewData["Title"] = "Analytics";
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/analytics.css" />
+}
+
+<!-- Page heading -->
+<div class="an-heading">
+    <div>
+        <h1><i class="fa-solid fa-chart-bar"></i> Analytics</h1>
+        <p>Your study activity and partnership performance overview.</p>
+    </div>
+</div>
+
+<!-- ── Summary metric cards ── -->
+<div class="an-metrics">
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#eef0ff;">
+            <i class="fa-solid fa-users" style="color:var(--indigo)"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">@Model.TotalPartnerships</div>
+            <div class="an-card-label">Total Partnerships</div>
+        </div>
+    </div>
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#e8fdf5;">
+            <i class="fa-solid fa-handshake" style="color:var(--teal)"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">@Model.ActivePartnerships</div>
+            <div class="an-card-label">Active Partnerships</div>
+        </div>
+    </div>
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#fff8e6;">
+            <i class="fa-solid fa-brain" style="color:#e67e22"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">@Model.TotalMatches</div>
+            <div class="an-card-label">AI Match Suggestions</div>
+        </div>
+    </div>
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#fdf0ef;">
+            <i class="fa-solid fa-message" style="color:#e74c3c"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">@Model.TotalMessages</div>
+            <div class="an-card-label">Messages Sent</div>
+        </div>
+    </div>
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#eef0ff;">
+            <i class="fa-solid fa-calendar-check" style="color:var(--indigo)"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">@Model.TotalSessions</div>
+            <div class="an-card-label">Study Sessions</div>
+        </div>
+    </div>
+    <div class="an-card">
+        <div class="an-card-icon" style="background:#e8fdf5;">
+            <i class="fa-solid fa-star" style="color:var(--teal)"></i>
+        </div>
+        <div class="an-card-info">
+            <div class="an-card-val">
+                @(Model.AverageRating > 0 ? Model.AverageRating.ToString("0.0") : "N/A")
+            </div>
+            <div class="an-card-label">Avg. Feedback Rating</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Two column layout ── -->
+<div class="an-grid">
+
+    <!-- Profile completion -->
+    <div class="an-section-card">
+        <h3 class="an-section-title">
+            <i class="fa-solid fa-circle-user"></i> Profile Completion
+        </h3>
+        <div class="completion-visual">
+            <div class="big-ring">
+                <svg viewBox="0 0 36 36">
+                    <path class="ring-bg"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path class="ring-fill"
+                            stroke-dasharray="@Model.ProfileCompletion, 100"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <span class="ring-pct">@Model.ProfileCompletion%</span>
+            </div>
+            <div class="completion-breakdown">
+                @foreach (var item in Model.ProfileBreakdown)
+                {
+                    <div class="breakdown-row">
+                        <span class="breakdown-label">@item.Label</span>
+                        <div class="breakdown-bar-wrap">
+                            <div class="breakdown-bar"
+                                    style="width:@item.Percentage%"></div>
+                        </div>
+                        <span class="breakdown-pct">@item.Percentage%</span>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (Model.ProfileCompletion < 100)
+        {
+            <a href="/Profile" class="btn-complete-profile">
+                <i class="fa-solid fa-pen"></i> Complete Your Profile
+            </a>
+        }
+    </div>
+
+    <!-- Learning style breakdown -->
+    <div class="an-section-card">
+        <h3 class="an-section-title">
+            <i class="fa-solid fa-brain"></i> Learning Style Profile
+        </h3>
+        <div class="vark-bars">
+            @foreach (var v in Model.VarkBreakdown)
+            {
+                <div class="vark-row">
+                    <span class="vark-label">@v.Label</span>
+                    <div class="vark-bar-wrap">
+                        <div class="vark-bar" style="width:@v.Percentage%"></div>
+                    </div>
+                    <span class="vark-pct">@v.Percentage%</span>
+                </div>
+            }
+        </div>
+        <div class="learning-summary">
+            <div class="summary-item">
+                <i class="fa-solid fa-gauge"></i>
+                <span>Study Pace: <strong>@Model.StudyPaceLabel</strong></span>
+            </div>
+            <div class="summary-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Collaboration: <strong>@Model.CollaborationLabel</strong></span>
+            </div>
+            <div class="summary-item">
+                <i class="fa-solid fa-arrows-left-right"></i>
+                <span>Interaction: <strong>@Model.InteractionLabel</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top interests -->
+    <div class="an-section-card">
+        <h3 class="an-section-title">
+            <i class="fa-solid fa-tags"></i> Your Academic Interests
+        </h3>
+        @if (Model.UserInterests.Count == 0)
+        {
+            <div class="an-empty">
+                <i class="fa-solid fa-tags"></i>
+                <p>No interests selected yet.</p>
+                <a href="/Profile">Update Interests</a>
+            </div>
+        }
+        else
+        {
+            <div class="interests-cloud">
+                @foreach (var interest in Model.UserInterests)
+                {
+                    <span class="interest-tag">@interest</span>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Partnership history -->
+    <div class="an-section-card">
+        <h3 class="an-section-title">
+            <i class="fa-solid fa-clock-rotate-left"></i> Partnership History
+        </h3>
+        @if (Model.PartnershipHistory.Count == 0)
+        {
+            <div class="an-empty">
+                <i class="fa-solid fa-users-slash"></i>
+                <p>No partnerships yet.</p>
+                <a href="/Matches">Find a Study Partner</a>
+            </div>
+        }
+        else
+        {
+            <div class="history-list">
+                @foreach (var p in Model.PartnershipHistory)
+                {
+                    <div class="history-row">
+                        <div class="history-av">@p.Initials</div>
+                        <div class="history-info">
+                            <div class="history-name">@p.PartnerName</div>
+                            <div class="history-date">
+                                <i class="fa-solid fa-calendar"></i>
+                                @p.StartDate
+                            </div>
+                        </div>
+                        <div class="history-right">
+                            <span class="history-score">@p.MatchScore%</span>
+                            <span class="history-status @(p.Status == "Active" ? "st-active" : p.Status == "Ended" ? "st-ended" : "st-pending")">
+                                @p.Status
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Top matches -->
+    <div class="an-section-card full-width">
+        <h3 class="an-section-title">
+            <i class="fa-solid fa-ranking-star"></i> Top AI Match Scores
+        </h3>
+        @if (Model.TopMatchScores.Count == 0)
+        {
+            <div class="an-empty">
+                <i class="fa-solid fa-brain"></i>
+                <p>No match scores computed yet.</p>
+                <a href="/Profile/Setup">Complete your profile</a>
+            </div>
+        }
+        else
+        {
+            <div class="match-scores-list">
+                @for (int i = 0; i < Model.TopMatchScores.Count; i++)
+                {
+                    var m = Model.TopMatchScores[i];
+                    <div class="match-score-row">
+                        <div class="match-rank">#@(i + 1)</div>
+                        <div class="match-av">@m.Initials</div>
+                        <div class="match-info">
+                            <div class="match-name">@m.FullName</div>
+                            <div class="match-level">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                @m.AcademicLevel Level
+                            </div>
+                        </div>
+                        <div class="match-score-bar-wrap">
+                            <div class="match-score-bar"
+                                    style="width:@m.Score%"></div>
+                        </div>
+                        <div class="match-score-val @(m.Score >= 70 ? "score-green" : "score-blue")">
+                            @m.Score%
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+ 

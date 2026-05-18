@@ -7,12 +7,12 @@ using System.Security.Claims;
 
 namespace StudySync.Pages
 {
-    public class CollaborateHomeModel : PageModel
+    public class CollaborateHomeModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public CollaborateHomeModel(StudySyncDbContext db, JwtService jwt)
+        public CollaborateHomeModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -50,6 +50,12 @@ namespace StudySync.Pages
 
             FullName = $"{user.FirstName} {user.LastName}".Trim();
             UserInitials = MakeInitials(user.FirstName, user.LastName);
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Collaborate";
+            ViewData["ShowSearch"] = true;
+            ViewData["SearchPlaceholder"] = "Search partners...";
+            ViewData["Title"] = "Collaborate";
 
             // Pending incoming requests count for notification badge
             PendingRequestCount = await _db.Partnerships

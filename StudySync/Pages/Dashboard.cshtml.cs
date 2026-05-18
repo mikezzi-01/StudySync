@@ -8,12 +8,12 @@ using System.Security.Claims;
 
 namespace StudySync.Pages
 {
-    public class DashboardModel : PageModel
+    public class DashboardModel : StudySyncPageModel
     {
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public DashboardModel(StudySyncDbContext db, JwtService jwt)
+        public DashboardModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -61,6 +61,11 @@ namespace StudySync.Pages
             UserInitials = $"{user.FirstName[0]}{(user.LastName?.Length > 0 ? user.LastName[0] : ' ')}".Trim().ToUpper();
             Department = user.LearnerProfile?.PreferredEnvironment ?? "CS DEPT.";
             ProfileCompletion = (int)(user.LearnerProfile?.ProfileCompletion ?? 0);
+
+            await PopulateLayoutAsync(userId.Value);
+            ViewData["ActivePage"] = "Dashboard";
+            ViewData["ShowSearch"] = false;
+            ViewData["Title"] = "Dashboard";
 
             // Time of day greeting
             var hour = DateTime.Now.Hour;
