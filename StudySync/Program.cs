@@ -40,6 +40,16 @@ builder.Services.AddScoped<StudySync.Services.MatchingEngineService>();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10MB limit
+});
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024; // 10MB
+});
+
 var app = builder.Build();
 
 // ── Middleware pipeline ──────────────────────────────────────

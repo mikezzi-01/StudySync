@@ -27,7 +27,7 @@ html {
 }
 
 body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Arial, Geneva, Tahoma, sans-serif;
     color: var(--text-dark);
     background: var(--white);
     overflow-x: hidden;
@@ -193,8 +193,9 @@ header {
 }
 
 .hero-left h1 {
+    font-family: Arial, monospace, sans-serif;
     font-size: 3rem;
-    font-weight: 900;
+    font-weight: 600;
     line-height: 1.1;
     color: var(--text-dark);
     margin-bottom: 1.2rem;

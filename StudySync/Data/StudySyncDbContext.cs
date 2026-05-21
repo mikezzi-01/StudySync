@@ -24,6 +24,7 @@ namespace StudySync.Data
         public DbSet<StudySession> StudySessions { get; set; }
         public DbSet<FlashcardDeck> FlashcardDecks { get; set; }
         public DbSet<FlashcardItem> FlashcardItems { get; set; }
+        public DbSet<CollaborationFile> CollaborationFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -232,6 +233,21 @@ namespace StudySync.Data
                       .WithMany(fd => fd.Items)
                       .HasForeignKey(fi => fi.DeckID)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<CollaborationFile>(entity =>
+            {
+                entity.ToTable("CollaborationFiles");
+
+                entity.HasOne(cf => cf.Partnership)
+                      .WithMany()
+                      .HasForeignKey(cf => cf.PartnershipID)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(cf => cf.Uploader)
+                      .WithMany()
+                      .HasForeignKey(cf => cf.UploaderUserID)
+                      .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

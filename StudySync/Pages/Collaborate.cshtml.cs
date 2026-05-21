@@ -11,9 +11,13 @@ namespace StudySync.Pages
     // ── Supporting models ─────────────────────────────────────────────────
     public class MessageViewModel
     {
+        public int MessageId { get; set; }
+        public int FileId { get; set; }
         public string Content { get; set; } = "";
         public DateTime SentAt { get; set; }
         public bool IsOwn { get; set; }
+        public bool IsFile { get; set; }
+        public string FileSize { get; set; } = "";
     }
 
     public class PartnerSummary
@@ -47,7 +51,7 @@ namespace StudySync.Pages
         private readonly StudySyncDbContext _db;
         private readonly JwtService _jwt;
 
-        public CollaborateModel(StudySyncDbContext db, JwtService jwt) : base(db, jwt)
+        public CollaborateModel(StudySyncDbContext db, JwtService jwt): base(db, jwt)
         {
             _db = db;
             _jwt = jwt;
@@ -61,6 +65,7 @@ namespace StudySync.Pages
         public string PartnerInitials { get; set; } = "";
         public string PartnerRole { get; set; } = "";
         public string SharedNotes { get; set; } = "";
+        public int CurrentUserId { get; set; }
 
         public Partnership? Partnership { get; set; }
         public List<MessageViewModel> Messages { get; set; } = new();
@@ -80,6 +85,13 @@ namespace StudySync.Pages
         private string MakeInitials(string first, string? last)
             => $"{first[0]}{(last?.Length > 0 ? last[0] : ' ')}".Trim().ToUpper();
 
+        private string FormatBytes(long bytes)
+        {
+            if (bytes < 1024) return bytes + " B";
+            if (bytes < 1048576) return (bytes / 1024.0).ToString("0.#") + " KB";
+            return (bytes / 1048576.0).ToString("0.#") + " MB";
+        }
+
         // ── GET ──────────────────────────────────────────────────────────
         public async Task<IActionResult> OnGetAsync(int partnershipId)
         {
@@ -91,13 +103,15 @@ namespace StudySync.Pages
             var user = await _db.Users.FindAsync(userId);
             if (user == null) return RedirectToPage("/Login");
 
-            FullName = $"{user.FirstName} {user.LastName}".Trim();
-            UserInitials = MakeInitials(user.FirstName, user.LastName);
+            CurrentUserId = userId.Value;
 
             await PopulateLayoutAsync(userId.Value);
             ViewData["ActivePage"] = "Collaborate";
             ViewData["ShowSearch"] = false;
             ViewData["Title"] = "Collaborate";
+
+            FullName = $"{user.FirstName} {user.LastName}".Trim();
+            UserInitials = MakeInitials(user.FirstName, user.LastName);
 
             // Load this specific partnership
             Partnership = await _db.Partnerships
@@ -124,8 +138,16 @@ namespace StudySync.Pages
                 // For the project we'll create simple text-based messages
                 Messages = await LoadMessages(partnershipId, userId.Value);
 
-                // Load sessions
-                Sessions = await LoadSessions(partnershipId);
+                Sessions = await _db.StudySessions
+                    .Where(s => s.PartnershipID == partnershipId)
+                    .OrderBy(s => s.ScheduledAt)
+                    .Select(s => new SessionViewModel
+                    {
+                        Title = s.Title,
+                        ScheduledAt = s.ScheduledAt,
+                        DurationMinutes = s.DurationMinutes
+                    })
+                    .ToListAsync();
             }
 
             // Load all active partnerships for the partner list sidebar
@@ -155,39 +177,82 @@ namespace StudySync.Pages
             return Page();
         }
 
+        public async Task<IActionResult> OnGetGetMessagesAsync(int partnershipId)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            var messages = await Db.CollaborationMessages
+                .Where(m => m.PartnershipID == partnershipId)
+                .OrderBy(m => m.SentAt)
+                .ToListAsync();
+
+            var files = await Db.CollaborationFiles
+                .Where(f => f.PartnershipID == partnershipId)
+                .OrderBy(f => f.UploadedAt)
+                .ToListAsync();
+
+            return new JsonResult(new
+            {
+                messages = messages.Select(m => new
+                {
+                    messageId = m.MessageID,
+                    content = m.Content,
+                    sentAt = m.SentAt.ToString("hh:mm tt"),
+                    isOwn = m.SenderUserID == userId
+                }),
+                files = files.Select(f => new
+                {
+                    fileId = f.FileID,
+                    fileName = f.FileName,
+                    fileSize = FormatBytes(f.FileSize),
+                    uploadedAt = f.UploadedAt.ToString("hh:mm tt"),
+                    isOwn = f.UploaderUserID == userId
+                })
+            });
+        }
+
         // ── Load messages ─────────────────────────────────────────────────
         private async Task<List<MessageViewModel>> LoadMessages(int partnershipId, int userId)
         {
-            // Messages stored in RecommendationCache table repurposed temporarily
-            // In production this would be a dedicated Messages table
-            // For the project scope we use a simple approach via the DB
-            var raw = await _db.Database
-                .SqlQueryRaw<MessageRaw>(
-                    $"SELECT Content, SentAt, SenderUserID FROM CollaborationMessages WHERE PartnershipID = {partnershipId} ORDER BY SentAt ASC"
-                ).ToListAsync();
+            var textMessages = await _db.CollaborationMessages
+                .Where(m => m.PartnershipID == partnershipId)
+                .OrderBy(m => m.SentAt)
+                .ToListAsync();
 
-            return raw.Select(r => new MessageViewModel
+            var fileMessages = await _db.CollaborationFiles
+                .Where(f => f.PartnershipID == partnershipId)
+                .OrderBy(f => f.UploadedAt)
+                .ToListAsync();
+
+            var allMessages = new List<MessageViewModel>();
+
+            foreach (var m in textMessages)
             {
-                Content = r.Content,
-                SentAt = r.SentAt,
-                IsOwn = r.SenderUserID == userId
-            }).ToList();
-        }
+                allMessages.Add(new MessageViewModel
+                {
+                    MessageId = m.MessageID,
+                    Content = m.Content,
+                    SentAt = m.SentAt,
+                    IsOwn = m.SenderUserID == userId,
+                    IsFile = false
+                });
+            }
 
-        // ── Load sessions ─────────────────────────────────────────────────
-        private async Task<List<SessionViewModel>> LoadSessions(int partnershipId)
-        {
-            var raw = await _db.Database
-                .SqlQueryRaw<SessionRaw>(
-                    $"SELECT Title, ScheduledAt, DurationMinutes FROM StudySessions WHERE PartnershipID = {partnershipId} ORDER BY ScheduledAt ASC"
-                ).ToListAsync();
-
-            return raw.Select(r => new SessionViewModel
+            foreach (var f in fileMessages)
             {
-                Title = r.Title,
-                ScheduledAt = r.ScheduledAt,
-                DurationMinutes = r.DurationMinutes
-            }).ToList();
+                allMessages.Add(new MessageViewModel
+                {
+                    FileId = f.FileID,
+                    Content = f.FileName,
+                    SentAt = f.UploadedAt,
+                    IsOwn = f.UploaderUserID == userId,
+                    IsFile = true,
+                    FileSize = FormatBytes(f.FileSize)
+                });
+            }
+
+            return allMessages.OrderBy(m => m.SentAt).ToList();
         }
 
         // ── POST: Send message ────────────────────────────────────────────
@@ -200,9 +265,14 @@ namespace StudySync.Pages
             if (string.IsNullOrWhiteSpace(body.Content))
                 return BadRequest("Message cannot be empty.");
 
-            await _db.Database.ExecuteSqlRawAsync(
-                "INSERT INTO CollaborationMessages (PartnershipID, SenderUserID, Content, SentAt) VALUES ({0}, {1}, {2}, {3})",
-                partnershipId, userId, body.Content.Trim(), DateTime.UtcNow);
+            _db.CollaborationMessages.Add(new CollaborationMessage
+            {
+                PartnershipID = partnershipId,
+                SenderUserID = userId.Value,
+                Content = body.Content.Trim(),
+                SentAt = DateTime.UtcNow
+            });
+            await _db.SaveChangesAsync();
 
             // Update last activity
             var partnership = await _db.Partnerships.FindAsync(partnershipId);
@@ -213,6 +283,58 @@ namespace StudySync.Pages
             }
 
             return new OkResult();
+        }
+
+
+        // ── POST: upload file ───────────────────────────────────────
+        public async Task<IActionResult> OnPostUploadFileAsync(int partnershipId, IFormFile file)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            if (file == null || file.Length == 0)
+                return BadRequest("No file provided.");
+
+            if (file.Length > 10 * 1024 * 1024)
+                return BadRequest("File size exceeds 10MB limit.");
+
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+
+            var colFile = new CollaborationFile
+            {
+                PartnershipID = partnershipId,
+                UploaderUserID = userId.Value,
+                FileName = file.FileName,
+                FileSize = file.Length,
+                ContentType = file.ContentType,
+                FileData = ms.ToArray(),
+                UploadedAt = DateTime.UtcNow
+            };
+
+            Db.CollaborationFiles.Add(colFile);
+
+            var partnership = await Db.Partnerships.FindAsync(partnershipId);
+            if (partnership != null)
+                partnership.LastActivityAt = DateTime.UtcNow;
+
+            await Db.SaveChangesAsync();
+
+            return new JsonResult(new { fileId = colFile.FileID, fileName = file.FileName });
+        }
+
+        public async Task<IActionResult> OnGetDownloadFileAsync(int partnershipId, int fileId)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null) return Unauthorized();
+
+            var file = await Db.CollaborationFiles
+                .FirstOrDefaultAsync(f => f.FileID == fileId &&
+                                          f.PartnershipID == partnershipId);
+
+            if (file == null) return NotFound();
+
+            return File(file.FileData, file.ContentType, file.FileName);
         }
 
         // ── POST: Save shared notes ───────────────────────────────────────
@@ -247,26 +369,21 @@ namespace StudySync.Pages
             if (string.IsNullOrWhiteSpace(body.Title) || body.DurationMinutes <= 0)
                 return BadRequest("Invalid session data.");
 
-            await _db.Database.ExecuteSqlRawAsync(
-                "INSERT INTO StudySessions (PartnershipID, Title, ScheduledAt, DurationMinutes, CreatedByUserID) VALUES ({0}, {1}, {2}, {3}, {4})",
-                partnershipId, body.Title.Trim(), body.ScheduledAt, body.DurationMinutes, userId);
+            _db.StudySessions.Add(new StudySession
+            {
+                PartnershipID = partnershipId,
+                Title = body.Title.Trim(),
+                ScheduledAt = body.ScheduledAt,
+                DurationMinutes = body.DurationMinutes,
+                CreatedByUserID = userId.Value,
+                CreatedAt = DateTime.UtcNow
+            });
+            await _db.SaveChangesAsync();
 
             return new OkResult();
         }
+
+
     }
 
-    // ── Raw query result types ────────────────────────────────────────────
-    public class MessageRaw
-    {
-        public string Content { get; set; } = "";
-        public DateTime SentAt { get; set; }
-        public int SenderUserID { get; set; }
-    }
-
-    public class SessionRaw
-    {
-        public string Title { get; set; } = "";
-        public DateTime ScheduledAt { get; set; }
-        public int DurationMinutes { get; set; }
-    }
 }
