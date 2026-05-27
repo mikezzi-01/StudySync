@@ -15,7 +15,7 @@
     --text-dark: #1a1a2e;
     --text-mid: #555577;
     --text-light: #8888aa;
-    --bg: #f4f4f8;
+    --bg: #f0f0ff;
     --white: #ffffff;
     --error: #e74c3c;
     --border: #ddddf0;
@@ -200,6 +200,7 @@ body {
     transition: border-color 0.2s, background 0.2s;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.4rem;
     position: relative;
 }
@@ -218,7 +219,7 @@ body {
             position: absolute;
             top: 0.7rem;
             right: 0.7rem;
-            background: var(--indigo);
+            background: var(--teal);
             color: white;
             border-radius: 50%;
             width: 22px;
@@ -231,6 +232,8 @@ body {
 
 .vark-icon {
     font-size: 1.6rem;
+    color: var(--teal);
+    /*    align-self: center;*/
 }
 
 .vark-card strong {
@@ -242,6 +245,7 @@ body {
     font-size: 0.8rem;
     color: var(--text-mid);
     line-height: 1.4;
+    text-align: center;
 }
 
 /* ── Pace toggle ── */
@@ -260,14 +264,14 @@ body {
         font-size: 0.8rem;
         font-weight: 700;
         letter-spacing: 0.07em;
-        color: var(--text-mid);
+        color: var(--teal);
         transition: background 0.2s, color 0.2s;
     }
 
         .pace-toggle label.selected,
         .pace-toggle label:has(input:checked) {
             background: var(--indigo);
-            color: white;
+            color: #fff;
         }
 
     .pace-toggle input[type="radio"] {
@@ -288,7 +292,8 @@ body {
 
     .slider-wrap input[type="range"] {
         width: 100%;
-        accent-color: var(--indigo);
+/*        height: 20px;*/
+        accent-color: var(--teal);
     }
 
 .slider-labels {
@@ -337,12 +342,25 @@ body {
 
     .collab-card strong {
         font-size: 0.85rem;
-        color: var(--text-dark);
+        color: var(--teal);
     }
 
     .collab-card small {
         font-size: 0.78rem;
         color: var(--text-mid);
+    }
+
+/*Interaction preference*/
+
+.pace-toggle label {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+    .pace-toggle label span {
+        font-size: 0.7rem;
+/*        color: var(--text-mid);*/
     }
 
 /* ── Interests grid ── */

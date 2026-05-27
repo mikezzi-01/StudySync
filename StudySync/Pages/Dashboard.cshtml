@@ -9,7 +9,7 @@
 <!-- Greeting banner -->
 <div class="greeting-banner">
     <div>
-        <h1>Good @Model.TimeOfDay, @Model.FirstName <i class="fas fa-hand-paper"></i></h1>
+        <h1>Good @Model.TimeOfDay, <span>@Model.FirstName</span> <i class="fa-solid fa-hand-peace"></i></h1>
         <p>Your AI Matcher found <strong>@Model.NewMatchCount new potential study partners</strong> for you. Ready to collaborate?</p>
     </div>
     <a href="/Matches" class="btn-find-partner">Find Partner</a>
@@ -20,12 +20,12 @@
     <div class="metric-card">
         <div class="metric-label">ACTIVE PARTNERSHIPS</div>
         <div class="metric-value">@Model.ActivePartnerships</div>
-        <div class="metric-icon"><i class="fas fa-link"></i></div>
+        <div class="metric-icon"><i class="fa-solid fa-link"></i></div>
     </div>
     <div class="metric-card">
         <div class="metric-label">MESSAGES</div>
         <div class="metric-value">@Model.UnreadMessages</div>
-        <div class="metric-icon"><i class="fas fa-envelope"></i></div>
+        <div class="metric-icon"><i class="fa-solid fa-envelope"></i></div>
     </div>
     <div class="metric-card">
         <div class="metric-label">PROFILE STATUS</div>

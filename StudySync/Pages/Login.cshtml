@@ -20,24 +20,17 @@
 
         <!-- Left branding panel -->
         <div class="auth-brand">
+            
             <div class="brand-logo">
-                <span class="logo-icon"><i class="fas fa-cube"></i></span> STUDYSYNC
+                <span class="logo-icon"><i class="fa-solid fa-book-open"></i></span> STUDYSYNC
             </div>
             <h1>Welcome<br />Back!</h1>
             <p>Rejoin your study clusters, pick up your last flashcard deck, and continue your journey toward mastery.</p>
-            <div class="brand-social">
-                <div class="avatar-stack">
-                    <span class="avatar">S</span>
-                    <span class="avatar">J</span>
-                    <span class="avatar">A</span>
-                    <span class="avatar-count">+2k</span>
-                </div>
-                <span>Join 2,000+ computer science scholars</span>
-            </div>
+            
         </div>
 
         <!-- Right form panel -->
-        <div class="auth-form-panel">
+        <div class="auth-form-panel login-panel">
             <h2>Sign in to StudySync</h2>
             <p class="form-subtitle">
                 Don't have an account? <a href="/Register">Register here</a>
@@ -58,7 +51,7 @@
                 <div class="form-group">
                     <label asp-for="Input.EmailOrMatric">EMAIL OR MATRIC NUMBER</label>
                     <div class="input-icon-wrapper">
-                        @* <span class="input-icon">&#64;</span> *@
+                       
                         <input asp-for="Input.EmailOrMatric"
                                placeholder="e.g. FOC/22/000001 or scholar@uni.edu" />
                     </div>
@@ -87,18 +80,9 @@
                     <label for="rememberCheck">Remember this session</label>
                 </div>
 
-                <button type="submit" class="btn-primary">Sign In &#8594;</button>
+                <button type="submit" class="btn-primary">Sign In</button>
 
-                <div class="divider"><span>SCHOLAR AUTH</span></div>
-
-                <div class="oauth-row">
-                    <button type="button" class="btn-oauth">
-                        <i class="fab fa-google"></i> Google
-                    </button>
-                    <button type="button" class="btn-oauth">
-                        <i class="fab fa-github"></i> GitHub
-                    </button>
-                </div>
+                
             </form>
 
             <p class="copyright">&#169; 2024 STUDYSYNC. DESIGNED FOR COMPUTER SCIENCE SCHOLARS.</p>

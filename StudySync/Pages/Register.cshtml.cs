@@ -134,8 +134,8 @@ namespace StudySync.Pages
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        [Range(typeof(bool), "true", "true",
-            ErrorMessage = "You must agree to the terms to continue.")]
-        public bool AgreeToTerms { get; set; }
+        //[Range(typeof(bool), "true", "true",
+        //    ErrorMessage = "You must agree to the terms to continue.")]
+        //public bool AgreeToTerms { get; set; }
     }
 }

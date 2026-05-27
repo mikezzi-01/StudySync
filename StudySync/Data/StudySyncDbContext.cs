@@ -25,6 +25,7 @@ namespace StudySync.Data
         public DbSet<FlashcardDeck> FlashcardDecks { get; set; }
         public DbSet<FlashcardItem> FlashcardItems { get; set; }
         public DbSet<CollaborationFile> CollaborationFiles { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -248,6 +249,16 @@ namespace StudySync.Data
                       .WithMany()
                       .HasForeignKey(cf => cf.UploaderUserID)
                       .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.ToTable("PasswordResetTokens");
+
+                entity.HasOne(prt => prt.User)
+                      .WithMany()
+                      .HasForeignKey(prt => prt.UserID)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

@@ -20,7 +20,7 @@
 
     <!-- Top bar -->
     <header class="setup-header">
-        <div class="brand"><i class="fas fa-cube"></i> StudySync</div>
+        <div class="brand"><i class="fa-solid fa-book-open"></i> StudySync</div>
         <div class="onboarding-label">Onboarding Phase</div>
         <div class="user-avatar">@Model.UserInitials</div>
     </header>
@@ -132,28 +132,28 @@
                     <label class="vark-card @(Model.Input.VarkStyle == "Visual" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Visual"
                                @(Model.Input.VarkStyle == "Visual" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fas fa-eye"></i></span>
+                        <span class="vark-icon"><i class="fa-solid fa-eye"></i></span>
                         <strong>Visual Learner</strong>
                         <small>You prefer diagrams, flowcharts, and visual code architectures over plain text.</small>
                     </label>
                     <label class="vark-card @(Model.Input.VarkStyle == "Auditory" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Auditory"
                                @(Model.Input.VarkStyle == "Auditory" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fas fa-music"></i></span>
+                        <span class="vark-icon"><i class="fa-solid fa-music"></i></span>
                         <strong>Auditory Learner</strong>
                         <small>Listening to lectures, podcasts, and participating in group discussions works best for you.</small>
                     </label>
                     <label class="vark-card @(Model.Input.VarkStyle == "Kinesthetic" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="Kinesthetic"
                                @(Model.Input.VarkStyle == "Kinesthetic" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fas fa-pen"></i></span>
+                        <span class="vark-icon"><i class="fa-solid fa-pen"></i></span>
                         <strong>Kinesthetic Learner</strong>
                         <small>You learn by doing. Coding challenges and hardware assembly are your go-to methods.</small>
                     </label>
                     <label class="vark-card @(Model.Input.VarkStyle == "ReadWrite" ? "selected" : "")">
                         <input type="radio" name="VarkStyle" value="ReadWrite"
                                @(Model.Input.VarkStyle == "ReadWrite" ? "checked" : "") />
-                        <span class="vark-icon">&#128214;</span>
+                        <span class="vark-icon"><i class="fa-solid fa-file-alt"></i></span>
                         <strong>Read &amp; Write</strong>
                         <small>Detailed documentation, technical blogs, and taking structured notes are your strengths.</small>
                     </label>
@@ -218,18 +218,17 @@
                     <label>COLLABORATION MODE</label>
                     <div class="collab-options">
                         @foreach (var opt in new[] {
-                            ("1", "&#128100;", "Solo + Occasional Help", "Mostly independent, ask for help when stuck"),
-                            ("2", "&#128101;", "Pair Study",             "One dedicated study partner"),
-                            ("3", "&#128101;", "Small Group (3–5)",      "Small focused study cluster"),
-                            ("4", "&#128101;", "Large Group",            "Open group sessions, the more the merrier")
+                            ("1", "Solo + Occasional Help", "Mostly independent, ask for help when stuck"),
+                            ("2", "Pair Study",             "One dedicated study partner"),
+                            ("3", "Small Group (3–5)",      "Small focused study cluster"),
+                            ("4", "Large Group",            "Open group sessions, the more the merrier")
                         })
                         {
                             <label class="collab-card @(Model.Input.CollaborationMode == opt.Item1 ? "selected" : "")">
                                 <input type="radio" name="CollaborationMode" value="@opt.Item1"
                                        @(Model.Input.CollaborationMode == opt.Item1 ? "checked" : "") />
-                                <span>@Html.Raw(opt.Item2)</span>
-                                <strong>@opt.Item3</strong>
-                                <small>@opt.Item4</small>
+                                <strong>@opt.Item2</strong>
+                                <small>@opt.Item3</small>
                             </label>
                         }
                     </div>
@@ -237,29 +236,22 @@
 
                 <div class="form-group">
                     <label>INTERACTION PREFERENCE</label>
-                    <div class="interaction-descriptions">
-                        <div class="interaction-hint">
-                            <strong>Synchronous</strong> — You and your partner study together in real time (live calls, shared sessions).
-                        </div>
-                        <div class="interaction-hint">
-                            <strong>Mixed</strong> — A combination of live sessions and independent work with check-ins.
-                        </div>
-                        <div class="interaction-hint">
-                            <strong>Asynchronous</strong> — You work independently and communicate through messages at your own pace.
-                        </div>
-                    </div>
+         
                     <div class="pace-toggle">
                         <label class="@(Model.Input.InteractionType == "1" ? "selected" : "")">
                             <input type="radio" name="InteractionType" value="1"
                                    @(Model.Input.InteractionType == "1" ? "checked" : "") /> SYNCHRONOUS
+                                <span>You and your partner study together in real time (live calls, shared sessions).</span>
                         </label>
                         <label class="@(Model.Input.InteractionType == "3" ? "selected" : "")">
                             <input type="radio" name="InteractionType" value="3"
                                    @(Model.Input.InteractionType == "3" ? "checked" : "") /> MIXED
+                                <span> A combination of live sessions and independent work with check-ins.</span>
                         </label>
                         <label class="@(Model.Input.InteractionType == "2" ? "selected" : "")">
                             <input type="radio" name="InteractionType" value="2"
                                    @(Model.Input.InteractionType == "2" ? "checked" : "") /> ASYNCHRONOUS
+								<span>You prefer to study independently and communicate via messages, forums, or shared notes.</span>
                         </label>
                     </div>
                 </div>

@@ -38,6 +38,7 @@ builder.Services.AddSingleton<StudySync.Services.JwtService>();
 builder.Services.AddHttpClient<StudySync.Services.MatchingEngineService>();
 builder.Services.AddScoped<StudySync.Services.MatchingEngineService>();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<StudySync.Services.EmailService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>

@@ -16,7 +16,7 @@
     --text-dark: #1a1a2e;
     --text-mid: #555577;
     --text-light: #8888aa;
-    --bg: #f4f4f8;
+    --bg: #f0f0ff;
     --white: #ffffff;
     --error: #e74c3c;
     --border: #ddddf0;
@@ -25,11 +25,13 @@
 
 body {
     font-family: Arial, Tahoma, sans-serif;
-    background: var(--bg);
+    /*    background: var(--bg);*/
+    background: url('../image/study_bg.jpg') no-repeat;
+    background-size: cover;
     color: var(--text-dark);
-    min-height: 100vh;
+/*    min-height: 100vh;*/
     display: flex;
-    align-items: stretch;
+/*    align-items: stretch;*/
 }
 
 /* ── Two-panel layout ── */
@@ -41,29 +43,22 @@ body {
 
 /* ── Left branding panel ── */
 .auth-brand {
-    background: var(--indigo);
+    background-color: rgba(61, 59, 243, 0.7);
+    background-size: cover;
+    width: 40%;
+    min-height: 100vh;
     color: var(--white);
+    position: relative;
+    overflow: hidden;
     flex: 0 0 40%;
     padding: 3rem 2.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
+    gap: 1rem;
 }
 
-    .auth-brand::after {
-        content: '';
-        position: absolute;
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        bottom: -80px;
-        right: -80px;
-    }
-
 .brand-logo {
+    color: var(--teal);
     font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: 2px;
@@ -77,14 +72,17 @@ body {
 }
 
 .auth-brand h1 {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
     font-size: 2.6rem;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.2;
     margin-top: 3rem;
 }
 
 .auth-brand p {
-    color: rgba(255,255,255,0.75);
+    color: #fff;
+    font-family: sans-serif;
+    font-weight: 500;
     font-size: 0.95rem;
     line-height: 1.6;
     margin-top: 1rem;
@@ -93,6 +91,7 @@ body {
 /* Brand badge (Register page) */
 .brand-badge {
     background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(15px);
     border-radius: var(--radius);
     padding: 1rem 1.2rem;
     display: flex;
@@ -115,69 +114,29 @@ body {
     font-size: 0.8rem;
 }
 
-/* Brand social (Login page) */
-.brand-social {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-top: auto;
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.8);
-}
-
-.avatar-stack {
-    display: flex;
-    align-items: center;
-}
-
-.avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--indigo-light);
-    border: 2px solid var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-left: -8px;
-    color: white;
-}
-
-    .avatar:first-child {
-        margin-left: 0;
-    }
-
-.avatar-count {
-    background: var(--teal);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: white;
-    margin-left: -8px;
-}
-
 /* ── Right form panel ── */
 .auth-form-panel {
     flex: 1;
-    background: var(--white);
-    padding: 3rem 4rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.3rem;
+    padding: 2rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow-y: auto;
+    align-self: center;
+    /*    overflow-y: auto;*/
     max-width: 500px;
     margin: 0 auto;
     width: 100%;
+    height: 95%;
 }
 
+    .auth-form-panel .login-panel {
+        height: 50%;
+        
+    }
     .auth-form-panel h2 {
         font-size: 2rem;
         font-weight: 800;
@@ -192,6 +151,7 @@ body {
 }
 
     .form-subtitle a {
+        font-family: cursive;
         color: var(--teal);
         font-weight: 600;
         text-decoration: none;
