@@ -292,7 +292,7 @@
 
 /* ── Empty state ── */
 .empty-state {
-    background: var(--white);
+    background: var(--cream);
     border: 1.5px dashed var(--border);
     border-radius: var(--radius);
     padding: 3rem 2rem;
