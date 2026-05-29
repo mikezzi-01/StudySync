@@ -37,6 +37,7 @@ namespace StudySync.Models
         public DateTime? LastLoginDate { get; set; }
 
         public bool IsActive { get; set; } = true;
+        public bool IsAdmin { get; set; } = false;
 
         // Navigation properties
         public LearnerProfile? LearnerProfile { get; set; }

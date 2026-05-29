@@ -166,23 +166,45 @@
 
             <div class="form-group">
                 <label>VARK LEARNING STYLE</label>
-                <div class="vark-options">
+                <div class="vark-rating-grid">
                     @foreach (var v in new[] {
-                                                    ("Visual",      "fa-eye",        "Visual Learner",       "Diagrams, flowcharts, visual code"),
-                                                    ("Auditory",    "fa-headphones", "Auditory Learner",     "Lectures, podcasts, group discussion"),
-                                                    ("Kinesthetic", "fa-hand",       "Kinesthetic Learner",  "Coding challenges, hands-on practice"),
-                                                    ("ReadWrite",   "fa-book-open",  "Read & Write",         "Documentation, notes, technical blogs")
-                                                    })
+                        ("VarkVisual",      "fa-eye",        "Visual",      "Diagrams, flowcharts, visual code architectures"),
+                        ("VarkAuditory",    "fa-headphones", "Auditory",    "Lectures, podcasts, group discussions"),
+                        ("VarkKinesthetic", "fa-hand",       "Kinesthetic", "Coding challenges, hands-on practice"),
+                        ("VarkReadWrite",   "fa-book-open",  "Read & Write","Documentation, notes, technical blogs")
+                    })
                     {
-                        <label class="vark-opt @(Model.VarkStyle == v.Item1 ? "selected" : "")">
-                            <input type="radio" name="VarkStyle" value="@v.Item1"
-                                    @(Model.VarkStyle == v.Item1 ? "checked" : "") />
-                            <i class="fa-solid @v.Item2"></i>
-                            <div>
-                                <strong>@v.Item3</strong>
-                                <small>@v.Item4</small>
+                        var currentVal = v.Item1 switch {
+                            "VarkVisual"      => (int)(Model.VarkVisual * 5 / 100),
+                            "VarkAuditory"    => (int)(Model.VarkAuditory * 5 / 100),
+                            "VarkKinesthetic" => (int)(Model.VarkKinesthetic * 5 / 100),
+                            _                 => (int)(Model.VarkReadWrite * 5 / 100)
+                        };
+                        if (currentVal < 1) currentVal = 3;
+
+                        <div class="vark-rating-row">
+                            <div class="vark-rating-info">
+                                <i class="fa-solid @v.Item2"></i>
+                                <div>
+                                    <strong>@v.Item3</strong>
+                                    <small>@v.Item4</small>
+                                </div>
                             </div>
-                        </label>
+                            <div class="vark-stars" data-key="@v.Item1">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <button type="button"
+                                            class="vark-star-btn @(i <= currentVal ? "active" : "")"
+                                            data-val="@i"
+                                            onclick="setVarkRating('@v.Item1', @i)">
+                                        <i class="fa-solid fa-star"></i>
+                                    </button>
+                                }
+                            </div>
+                            <input type="hidden" name="@v.Item1"
+                                   id="@v.Item1" value="@currentVal" />
+                            <span class="vark-val-label" id="@v.Item1-label">@currentVal</span>
+                        </div>
                     }
                 </div>
             </div>
@@ -361,7 +383,8 @@
     </form>
 </div>
 
-<script>
+@section Scripts {
+   <script>
     // ── Tab switching ─────────────────────────────────────────────────────
     function switchPTab(name, btn) {
         document.querySelectorAll('.ptab-panel').forEach(p => p.classList.add('hidden'));
@@ -399,5 +422,29 @@
         document.getElementById('sidebar').classList.toggle('sidebar-open');
         document.getElementById('sidebarOverlay').classList.toggle('hidden');
     }
+
+    // ── VARK star rating ──────────────────────────────────────────────────
+function setVarkRating(key, value) {
+    // Update hidden input
+    document.getElementById(key).value = value;
+
+    // Update label
+    document.getElementById(key + '-label').textContent = value;
+
+    // Highlight stars
+    const container = document.querySelector(`.vark-stars[data-key="${key}"]`);
+    container.querySelectorAll('.vark-star-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx < value);
+    });
+}
+
+// Initialise stars on page load from hidden input values
+document.querySelectorAll('.vark-stars').forEach(container => {
+    const key   = container.dataset.key;
+    const input = document.getElementById(key);
+    if (input) setVarkRating(key, parseInt(input.value) || 3);
+});
 </script>
+}
+
 

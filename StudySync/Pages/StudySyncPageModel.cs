@@ -51,6 +51,7 @@ namespace StudySync.Pages
             ViewData["FullName"] = fullName;
             ViewData["UserInitials"] = userInitials;
             ViewData["PendingCount"] = pendingCount;
+            ViewData["IsAdmin"] = user.IsAdmin;
         }
     }
 }

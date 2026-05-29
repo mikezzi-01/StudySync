@@ -128,35 +128,95 @@
 
                 <h3 class="section-title">How do you prefer to learn?</h3>
 
-                <div class="vark-grid">
-                    <label class="vark-card @(Model.Input.VarkStyle == "Visual" ? "selected" : "")">
-                        <input type="radio" name="VarkStyle" value="Visual"
-                               @(Model.Input.VarkStyle == "Visual" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fa-solid fa-eye"></i></span>
-                        <strong>Visual Learner</strong>
-                        <small>You prefer diagrams, flowcharts, and visual code architectures over plain text.</small>
-                    </label>
-                    <label class="vark-card @(Model.Input.VarkStyle == "Auditory" ? "selected" : "")">
-                        <input type="radio" name="VarkStyle" value="Auditory"
-                               @(Model.Input.VarkStyle == "Auditory" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fa-solid fa-music"></i></span>
-                        <strong>Auditory Learner</strong>
-                        <small>Listening to lectures, podcasts, and participating in group discussions works best for you.</small>
-                    </label>
-                    <label class="vark-card @(Model.Input.VarkStyle == "Kinesthetic" ? "selected" : "")">
-                        <input type="radio" name="VarkStyle" value="Kinesthetic"
-                               @(Model.Input.VarkStyle == "Kinesthetic" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fa-solid fa-pen"></i></span>
-                        <strong>Kinesthetic Learner</strong>
-                        <small>You learn by doing. Coding challenges and hardware assembly are your go-to methods.</small>
-                    </label>
-                    <label class="vark-card @(Model.Input.VarkStyle == "ReadWrite" ? "selected" : "")">
-                        <input type="radio" name="VarkStyle" value="ReadWrite"
-                               @(Model.Input.VarkStyle == "ReadWrite" ? "checked" : "") />
-                        <span class="vark-icon"><i class="fa-solid fa-file-alt"></i></span>
-                        <strong>Read &amp; Write</strong>
-                        <small>Detailed documentation, technical blogs, and taking structured notes are your strengths.</small>
-                    </label>
+                <p class="step-desc">
+                    Rate each learning style from 1 (rarely) to 5 (always).
+                    You can score multiple styles highly.
+                </p>
+
+                <div class="vark-rating-grid">
+                    <div class="vark-rating-row">
+                        <div class="vark-rating-info">
+                            <i class="fa-solid fa-eye"></i>
+                            <div>
+                                <strong>Visual</strong>
+                                <small>Diagrams, flowcharts, visual code architectures</small>
+                            </div>
+                        </div>
+                        <div class="vark-stars" data-key="VarkVisual">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="vark-star-btn" data-val="@i"
+                                        onclick="setVarkRating('VarkVisual', @i)">
+                                    <i class="fa-solid fa-star"></i>
+                                </button>
+                            }
+                        </div>
+                        <input type="hidden" name="VarkVisual" id="VarkVisual" value="3" />
+                        <span class="vark-val-label" id="VarkVisual-label">3</span>
+                    </div>
+
+                    <div class="vark-rating-row">
+                        <div class="vark-rating-info">
+                            <i class="fa-solid fa-headphones"></i>
+                            <div>
+                                <strong>Auditory</strong>
+                                <small>Lectures, podcasts, group discussions</small>
+                            </div>
+                        </div>
+                        <div class="vark-stars" data-key="VarkAuditory">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="vark-star-btn" data-val="@i"
+                                        onclick="setVarkRating('VarkAuditory', @i)">
+                                    <i class="fa-solid fa-star"></i>
+                                </button>
+                            }
+                        </div>
+                        <input type="hidden" name="VarkAuditory" id="VarkAuditory" value="3" />
+                        <span class="vark-val-label" id="VarkAuditory-label">3</span>
+                    </div>
+
+                    <div class="vark-rating-row">
+                        <div class="vark-rating-info">
+                            <i class="fa-solid fa-hand"></i>
+                            <div>
+                                <strong>Kinesthetic</strong>
+                                <small>Coding challenges, hands-on practice</small>
+                            </div>
+                        </div>
+                        <div class="vark-stars" data-key="VarkKinesthetic">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="vark-star-btn" data-val="@i"
+                                        onclick="setVarkRating('VarkKinesthetic', @i)">
+                                    <i class="fa-solid fa-star"></i>
+                                </button>
+                            }
+                        </div>
+                        <input type="hidden" name="VarkKinesthetic" id="VarkKinesthetic" value="3" />
+                        <span class="vark-val-label" id="VarkKinesthetic-label">3</span>
+                    </div>
+
+                    <div class="vark-rating-row">
+                        <div class="vark-rating-info">
+                            <i class="fa-solid fa-book-open"></i>
+                            <div>
+                                <strong>Read &amp; Write</strong>
+                                <small>Documentation, notes, technical blogs</small>
+                            </div>
+                        </div>
+                        <div class="vark-stars" data-key="VarkReadWrite">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="vark-star-btn" data-val="@i"
+                                        onclick="setVarkRating('VarkReadWrite', @i)">
+                                    <i class="fa-solid fa-star"></i>
+                                </button>
+                            }
+                        </div>
+                        <input type="hidden" name="VarkReadWrite" id="VarkReadWrite" value="3" />
+                        <span class="vark-val-label" id="VarkReadWrite-label">3</span>
+                    </div>
                 </div>
 
                 <h3 class="section-title" style="margin-top:2rem;">Study Pace</h3>
@@ -290,7 +350,7 @@
             ══════════════════════════════════════════ -->
             @if (Model.CurrentStep == 5)
             {
-                <div class="step-intro">
+                <div class="step-intro availability-header">
                     <p class="step-num">STEP 5 OF 5</p>
                     <h2>When do you study?</h2>
                     <p class="step-desc">We use your availability to match you with partners who are online when you are.</p>
@@ -401,94 +461,116 @@
 
 </div>
 
-<script>
-    // Consistency slider labels
-    const consistencyLabels = {
-        1: "Very Inconsistent", 2: "Inconsistent",
-        3: "Moderate", 4: "Consistent", 5: "Very Consistent"
-    };
 
-    // Availability slot toggle
-    function toggleSlot(checkbox) {
-        const cell = checkbox.closest('.slot-cell');
-        if (checkbox.checked) {
-            cell.classList.add('checked');
-            cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
-                + checkbox.value + '" class="slot-check" checked onchange="toggleSlot(this)" /><span>&#10003;</span>';
-        } else {
-            cell.classList.remove('checked');
-            cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
-                + checkbox.value + '" class="slot-check" onchange="toggleSlot(this)" />';
+    <script>
+        // Consistency slider labels
+        const consistencyLabels = {
+            1: "Very Inconsistent", 2: "Inconsistent",
+            3: "Moderate", 4: "Consistent", 5: "Very Consistent"
+        };
+
+        // Availability slot toggle
+        function toggleSlot(checkbox) {
+            const cell = checkbox.closest('.slot-cell');
+            if (checkbox.checked) {
+                cell.classList.add('checked');
+                cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
+                    + checkbox.value + '" class="slot-check" checked onchange="toggleSlot(this)" /><span>&#10003;</span>';
+            } else {
+                cell.classList.remove('checked');
+                cell.innerHTML = '<input type="checkbox" name="AvailabilitySlots" value="'
+                    + checkbox.value + '" class="slot-check" onchange="toggleSlot(this)" />';
+            }
         }
-    }
 
-    function selectAll() {
-        document.querySelectorAll('.slot-check').forEach(cb => {
-            cb.checked = true;
-            cb.closest('.slot-cell').classList.add('checked');
+        function selectAll() {
+            document.querySelectorAll('.slot-check').forEach(cb => {
+                cb.checked = true;
+                cb.closest('.slot-cell').classList.add('checked');
+            });
+        }
+
+        function clearAll() {
+            document.querySelectorAll('.slot-check').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.slot-cell').classList.remove('checked');
+            });
+        }
+
+        // Interest count
+        // Interest chips — highlight + count
+        document.querySelectorAll('input[name="SelectedInterestIds"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const chip = cb.closest('.interest-chip');
+                if (cb.checked) chip.classList.add('selected');
+                else chip.classList.remove('selected');
+
+                const count = document.querySelectorAll('input[name="SelectedInterestIds"]:checked').length;
+                const el = document.getElementById('interestCount');
+                if (el) el.textContent = count;
+            });
+        });
+
+        // VARK card highlight
+        document.querySelectorAll('.vark-card input').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.vark-card').forEach(c => c.classList.remove('selected'));
+                radio.closest('.vark-card').classList.add('selected');
+            });
+        });
+
+        // Collab card highlight
+        document.querySelectorAll('.collab-card input').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.collab-card').forEach(c => c.classList.remove('selected'));
+                radio.closest('.collab-card').classList.add('selected');
+            });
+        });
+        // Session option highlight
+        document.querySelectorAll('input[name="PreferredSession"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.session-option').forEach(s => s.classList.remove('selected'));
+                radio.closest('.session-option').classList.add('selected');
+            });
+        });
+
+        // Pace toggle highlight
+        document.querySelectorAll('.pace-toggle input').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
+                radio.closest('label').classList.add('selected');
+            });
+        });
+
+        // Interaction toggle highlight
+        document.querySelectorAll('input[name="InteractionType"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
+                radio.closest('label').classList.add('selected');
+            });
+        });
+        // ── VARK star rating ──────────────────────────────────────────────────
+    function setVarkRating(key, value) {
+        // Update hidden input
+        document.getElementById(key).value = value;
+
+        // Update label
+        document.getElementById(key + '-label').textContent = value;
+
+        // Highlight stars
+        const container = document.querySelector(`.vark-stars[data-key="${key}"]`);
+        container.querySelectorAll('.vark-star-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx < value);
         });
     }
 
-    function clearAll() {
-        document.querySelectorAll('.slot-check').forEach(cb => {
-            cb.checked = false;
-            cb.closest('.slot-cell').classList.remove('checked');
-        });
-    }
-
-    // Interest count
-    // Interest chips — highlight + count
-    document.querySelectorAll('input[name="SelectedInterestIds"]').forEach(cb => {
-        cb.addEventListener('change', () => {
-            const chip = cb.closest('.interest-chip');
-            if (cb.checked) chip.classList.add('selected');
-            else chip.classList.remove('selected');
-
-            const count = document.querySelectorAll('input[name="SelectedInterestIds"]:checked').length;
-            const el = document.getElementById('interestCount');
-            if (el) el.textContent = count;
-        });
+    // Initialise stars on page load from hidden input values
+    document.querySelectorAll('.vark-stars').forEach(container => {
+        const key   = container.dataset.key;
+        const input = document.getElementById(key);
+        if (input) setVarkRating(key, parseInt(input.value) || 3);
     });
-
-    // VARK card highlight
-    document.querySelectorAll('.vark-card input').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.vark-card').forEach(c => c.classList.remove('selected'));
-            radio.closest('.vark-card').classList.add('selected');
-        });
-    });
-
-    // Collab card highlight
-    document.querySelectorAll('.collab-card input').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.collab-card').forEach(c => c.classList.remove('selected'));
-            radio.closest('.collab-card').classList.add('selected');
-        });
-    });
-    // Session option highlight
-    document.querySelectorAll('input[name="PreferredSession"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.session-option').forEach(s => s.classList.remove('selected'));
-            radio.closest('.session-option').classList.add('selected');
-        });
-    });
-
-    // Pace toggle highlight
-    document.querySelectorAll('.pace-toggle input').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
-            radio.closest('label').classList.add('selected');
-        });
-    });
-
-    // Interaction toggle highlight
-    document.querySelectorAll('input[name="InteractionType"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.pace-toggle label').forEach(l => l.classList.remove('selected'));
-            radio.closest('label').classList.add('selected');
-        });
-    });
-</script>
+    </script>
 
 </body>
 </html>

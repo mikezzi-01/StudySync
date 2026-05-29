@@ -94,10 +94,10 @@ namespace StudySync.Pages.Profile
 
                 case 2:
                     // Convert VARK radio to scores
-                    profile.VarkVisual = Input.VarkStyle == "Visual" ? 100 : 0;
-                    profile.VarkAuditory = Input.VarkStyle == "Auditory" ? 100 : 0;
-                    profile.VarkKinesthetic = Input.VarkStyle == "Kinesthetic" ? 100 : 0;
-                    profile.VarkReadWrite = Input.VarkStyle == "ReadWrite" ? 100 : 0;
+                    profile.VarkVisual = Input.VarkVisual * 20;
+                    profile.VarkAuditory = Input.VarkAuditory * 20;
+                    profile.VarkKinesthetic = Input.VarkKinesthetic * 20;
+                    profile.VarkReadWrite = Input.VarkReadWrite * 20;
                     profile.StudyPace = short.TryParse(Input.StudyPace, out var pace) ? pace : (short)3;
                     break;
 
@@ -172,8 +172,12 @@ namespace StudySync.Pages.Profile
         public string? MotivationDriver { get; set; }
 
         // Step 2
-        public string VarkStyle { get; set; } = "Visual";
         public string StudyPace { get; set; } = "3";
+        // Step 2 — VARK ratings (1-5)
+        public decimal VarkVisual { get; set; } = 3;
+        public decimal VarkAuditory { get; set; } = 3;
+        public decimal VarkKinesthetic { get; set; } = 3;
+        public decimal VarkReadWrite { get; set; } = 3;
 
         // Step 3
         public string StudyConsistencyStr { get; set; } = "3";

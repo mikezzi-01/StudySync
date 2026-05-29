@@ -55,7 +55,7 @@
 				<div class="form-row">
 					<div class="form-group">
 						<label asp-for="Input.FirstName">FULL NAME</label>
-						<input asp-for="Input.FirstName" placeholder="Mikel Morgan" />
+						<input asp-for="Input.FirstName" placeholder="Your full name" />
 						<span asp-validation-for="Input.FirstName" class="field-error"></span>
 					</div>
 					<div class="form-group">
@@ -67,7 +67,7 @@
 
 				<div class="form-group">
 					<label asp-for="Input.Email">EMAIL ADDRESS</label>
-					<input asp-for="Input.Email" type="email" placeholder="scholar@university.edu" />
+					<input asp-for="Input.Email" type="email" placeholder="youremail@gmail.com" />
 					<span asp-validation-for="Input.Email" class="field-error"></span>
 				</div>
 
@@ -88,7 +88,7 @@
 					<div class="password-wrapper">
 						<i class="fas fa-lock input-icon"></i>
 						<input asp-for="Input.Password" type="password"
-							   id="passwordInput" placeholder="••••••••" />
+							   id="passwordInput" placeholder="********" />
 						<button type="button" class="toggle-password"
 								onclick="togglePassword('passwordInput', this)">
 							<i class="fa-solid fa-eye"></i>
@@ -104,7 +104,7 @@
 					<div class="password-wrapper">
 						<i class="fas fa-lock input-icon"></i>
 						<input asp-for="Input.ConfirmPassword" type="password"
-							   id="confirmInput" placeholder="••••••••" />
+							   id="confirmInput" placeholder="********" />
 						<button type="button" class="toggle-password"
 								onclick="togglePassword('confirmInput', this)">
 							<i class="fa-solid fa-eye"></i>

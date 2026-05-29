@@ -248,6 +248,102 @@ body {
     text-align: center;
 }
 
+/* ── VARK Rating Grid ── */
+.vark-rating-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.vark-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    transition: border-color 0.2s;
+}
+
+    .vark-rating-row:hover {
+        border-color: var(--indigo);
+    }
+
+.vark-rating-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex: 1;
+    min-width: 0;
+}
+
+    .vark-rating-info i {
+        font-size: 1.2rem;
+        color: var(--indigo);
+        width: 28px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .vark-rating-info strong {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--text-dark);
+    }
+
+    .vark-rating-info small {
+        font-size: 0.72rem;
+        color: var(--text-mid);
+        line-height: 1.4;
+    }
+
+.vark-stars {
+    display: flex;
+    gap: 0.2rem;
+    flex-shrink: 0;
+}
+
+.vark-star-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s, transform 0.1s;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    .vark-star-btn:hover,
+    .vark-star-btn.active {
+        color: #f1c40f;
+    }
+
+    .vark-star-btn:hover {
+        transform: scale(1.15);
+    }
+
+.vark-val-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--indigo);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .vark-rating-row {
+        flex-wrap: wrap;
+    }
+
+    .vark-rating-info {
+        width: 100%;
+    }
+}
+
 /* ── Pace toggle ── */
 .pace-toggle {
     display: flex;
@@ -264,7 +360,7 @@ body {
         font-size: 0.8rem;
         font-weight: 700;
         letter-spacing: 0.07em;
-        color: var(--teal);
+        color: var(--text-dark);
         transition: background 0.2s, color 0.2s;
     }
 
@@ -358,10 +454,11 @@ body {
     flex-direction: column;
     gap: 0.3rem;
 }
-    .pace-toggle label span {
+    .pace-toggle span {
         font-size: 0.7rem;
 /*        color: var(--text-mid);*/
     }
+
 
 /* ── Interests grid ── */
 .interests-grid {
@@ -586,8 +683,13 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .availability-header {
+        margin-left: -2rem;
+    }
+
     .availability-layout {
         grid-template-columns: 1fr;
+        margin-left: -2rem;
     }
 
     .step-labels {

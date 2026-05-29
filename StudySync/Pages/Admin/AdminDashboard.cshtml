@@ -1,0 +1,332 @@
+﻿@page
+@model StudySync.Pages.Admin.AdminDashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    ViewData["ActivePage"] = "";
+    ViewData["ShowSearch"] = false;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<!-- Admin header -->
+<div class="admin-header">
+    <div>
+        <h1><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h1>
+        <p>System overview and management panel.</p>
+    </div>
+    <div class="admin-header-actions">
+        <form method="post" asp-page-handler="RecomputeAll">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-recompute">
+                <i class="fa-solid fa-rotate"></i> Recompute All Matches
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="admin-alert admin-alert-success">
+        <i class="fa-solid fa-circle-check"></i> @Model.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="admin-alert admin-alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i> @Model.ErrorMessage
+    </div>
+}
+
+<!-- ── System metrics ── -->
+<div class="admin-metrics">
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#eef0ff;">
+            <i class="fa-solid fa-users" style="color:var(--indigo)"></i>
+        </div>
+        <div>
+            <div class="metric-val">@Model.TotalUsers</div>
+            <div class="metric-lbl">Total Users</div>
+        </div>
+    </div>
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#e8fdf5;">
+            <i class="fa-solid fa-circle-check" style="color:#1abc9c"></i>
+        </div>
+        <div>
+            <div class="metric-val">@Model.ActiveUsers</div>
+            <div class="metric-lbl">Active Users</div>
+        </div>
+    </div>
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#fff8e6;">
+            <i class="fa-solid fa-handshake" style="color:#e67e22"></i>
+        </div>
+        <div>
+            <div class="metric-val">@Model.TotalPartnerships</div>
+            <div class="metric-lbl">Total Partnerships</div>
+        </div>
+    </div>
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#fdf0ef;">
+            <i class="fa-solid fa-message" style="color:#e74c3c"></i>
+        </div>
+        <div>
+            <div class="metric-val">@Model.TotalMessages</div>
+            <div class="metric-lbl">Messages Sent</div>
+        </div>
+    </div>
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#eef0ff;">
+            <i class="fa-solid fa-brain" style="color:var(--indigo)"></i>
+        </div>
+        <div>
+            <div class="metric-val">@Model.TotalRecommendations</div>
+            <div class="metric-lbl">AI Recommendations</div>
+        </div>
+    </div>
+    <div class="admin-metric-card">
+        <div class="metric-icon" style="background:#e8fdf5;">
+            <i class="fa-solid fa-star" style="color:#1abc9c"></i>
+        </div>
+        <div>
+            <div class="metric-val">
+                @(Model.AverageRating > 0 ? Model.AverageRating.ToString("0.0") : "N/A")
+            </div>
+            <div class="metric-lbl">Avg. Feedback Rating</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Two column layout ── -->
+<div class="admin-grid">
+
+    <!-- User Management -->
+    <div class="admin-section-card full-width">
+        <div class="admin-section-header">
+            <h3><i class="fa-solid fa-users"></i> User Management</h3>
+            <div class="admin-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search users..."
+                       oninput="filterUsers(this.value)" />
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Matric No.</th>
+                        <th>Level</th>
+                        <th>Profile %</th>
+                        <th>Registered</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="user-row" data-name="@user.FullName.ToLower()"
+                            data-email="@user.Email.ToLower()">
+                            <td class="td-id">@user.UserID</td>
+                            <td class="td-name">
+                                <div class="user-av-inline">@user.Initials</div>
+                                @user.FullName
+                                @if (user.IsAdmin)
+                                {
+                                    <span class="admin-badge">ADMIN</span>
+                                }
+                            </td>
+                            <td>@user.Email</td>
+                            <td>@user.MatricNumber</td>
+                            <td>@user.AcademicLevel</td>
+                            <td>
+                                <div class="profile-pct-bar">
+                                    <div class="profile-pct-fill"
+                                         style="width:@user.ProfileCompletion%"></div>
+                                </div>
+                                <span class="pct-label">@user.ProfileCompletion%</span>
+                            </td>
+                            <td>@user.RegisteredAt.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="status-pill @(user.IsActive ? "pill-active" : "pill-inactive")">
+                                    @(user.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                @if (!user.IsAdmin)
+                                {
+                                    <form method="post"
+                                          asp-page-handler="ToggleUser"
+                                          style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId"
+                                               value="@user.UserID" />
+                                        <button type="submit"
+                                                class="@(user.IsActive ? "btn-deactivate" : "btn-activate")">
+                                            @(user.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="td-protected">Protected</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Partnership Overview -->
+    <div class="admin-section-card">
+        <div class="admin-section-header">
+            <h3><i class="fa-solid fa-handshake"></i> Partnership Overview</h3>
+        </div>
+
+        <div class="partnership-stats">
+            @foreach (var stat in Model.PartnershipStats)
+            {
+                <div class="pstat-row">
+                    <span class="pstat-label">@stat.Status</span>
+                    <div class="pstat-bar-wrap">
+                        <div class="pstat-bar"
+                             style="width:@(Model.TotalPartnerships > 0 ? (stat.Count * 100 / Model.TotalPartnerships) : 0)%">
+                        </div>
+                    </div>
+                    <span class="pstat-count">@stat.Count</span>
+                </div>
+            }
+        </div>
+
+        <div class="admin-section-header" style="margin-top:1.5rem;">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Partnerships</h3>
+        </div>
+
+        <div class="recent-list">
+            @foreach (var p in Model.RecentPartnerships)
+            {
+                <div class="recent-row">
+                    <div class="recent-avatars">
+                        <div class="user-av-inline">@p.User1Initials</div>
+                        <div class="user-av-inline av-secondary">@p.User2Initials</div>
+                    </div>
+                    <div class="recent-info">
+                        <div class="recent-names">
+                            @p.User1Name &amp; @p.User2Name
+                        </div>
+                        <div class="recent-date">
+                            @p.CreatedAt.ToString("MMM dd, yyyy")
+                        </div>
+                    </div>
+                    <span class="status-pill @GetPartnershipPillClass(p.Status)">
+                        @p.Status
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- AI Matching Stats -->
+    <div class="admin-section-card">
+        <div class="admin-section-header">
+            <h3><i class="fa-solid fa-brain"></i> AI Matching Stats</h3>
+        </div>
+
+        <div class="match-stats">
+            <div class="match-stat-item">
+                <div class="match-stat-val">@Model.UsersWithMatches</div>
+                <div class="match-stat-lbl">Users with matches</div>
+            </div>
+            <div class="match-stat-item">
+                <div class="match-stat-val">@Model.UsersWithoutMatches</div>
+                <div class="match-stat-lbl">Users without matches</div>
+            </div>
+            <div class="match-stat-item">
+                <div class="match-stat-val">
+                    @(Model.AverageMatchScore > 0
+                        ? Model.AverageMatchScore.ToString("0.0") + "%"
+                        : "N/A")
+                </div>
+                <div class="match-stat-lbl">Avg. match score</div>
+            </div>
+            <div class="match-stat-item">
+                <div class="match-stat-val">@Model.ExpiredCacheEntries</div>
+                <div class="match-stat-lbl">Expired cache entries</div>
+            </div>
+        </div>
+
+        <div class="admin-section-header" style="margin-top:1.5rem;">
+            <h3><i class="fa-solid fa-trophy"></i> Top Match Scores</h3>
+        </div>
+
+        <div class="recent-list">
+            @foreach (var m in Model.TopMatchScores)
+            {
+                <div class="recent-row">
+                    <div class="recent-info">
+                        <div class="recent-names">
+                            @m.User1Name → @m.User2Name
+                        </div>
+                    </div>
+                    <div class="match-score-badge
+                        @(m.Score >= 80 ? "badge-green" : m.Score >= 60 ? "badge-blue" : "badge-grey")">
+                        @m.Score%
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="admin-section-header" style="margin-top:1.5rem;">
+            <h3><i class="fa-solid fa-star"></i> Feedback Overview</h3>
+        </div>
+
+        <div class="match-stats">
+            <div class="match-stat-item">
+                <div class="match-stat-val">@Model.TotalFeedbacks</div>
+                <div class="match-stat-lbl">Total feedbacks</div>
+            </div>
+            <div class="match-stat-item">
+                <div class="match-stat-val">
+                    @(Model.AverageRating > 0
+                        ? Model.AverageRating.ToString("0.0") + " / 5"
+                        : "N/A")
+                </div>
+                <div class="match-stat-lbl">Avg. rating</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@functions {
+    string GetPartnershipPillClass(string status) => status switch
+    {
+        "Active" => "pill-active",
+        "Ended" => "pill-inactive",
+        "Requested" => "pill-pending",
+        _ => "pill-pending"
+    };
+}
+
+@section Scripts {
+    <script>
+        function filterUsers(query) {
+            const q = query.toLowerCase();
+            document.querySelectorAll('.user-row').forEach(row => {
+                const name  = row.dataset.name  || '';
+                const email = row.dataset.email || '';
+                row.style.display =
+                    name.includes(q) || email.includes(q) ? '' : 'none';
+            });
+        }
+    </script>
+}

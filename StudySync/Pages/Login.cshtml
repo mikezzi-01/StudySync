@@ -53,7 +53,7 @@
                     <div class="input-icon-wrapper">
                        
                         <input asp-for="Input.EmailOrMatric"
-                               placeholder="e.g. FOC/22/000001 or scholar@uni.edu" />
+                               placeholder="e.g. FOC/22/000001 or youremail@gmail.com" />
                     </div>
                     <span asp-validation-for="Input.EmailOrMatric" class="field-error"></span>
                 </div>
@@ -66,7 +66,7 @@
                     <div class="password-wrapper">
                         <i class="fas fa-lock input-icon"></i>
                         <input asp-for="Input.Password" type="password"
-                               id="loginPassword" placeholder="••••••••" />
+                               id="loginPassword" placeholder="********" />
                         <button type="button" class="toggle-password"
                                 onclick="togglePassword('loginPassword', this)">
                             <i class="fas fa-eye"></i>

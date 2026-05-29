@@ -34,7 +34,10 @@ namespace StudySync.Pages
         public int PendingRequestCount { get; set; }
 
         // Learner profile fields
-        public string VarkStyle { get; set; } = "Visual";
+        public decimal VarkVisual { get; set; }
+        public decimal VarkAuditory { get; set; }
+        public decimal VarkKinesthetic { get; set; }
+        public decimal VarkReadWrite { get; set; }
         public int StudyPace { get; set; } = 3;
         public int CollaborationMode { get; set; } = 2;
         public int InteractionType { get; set; } = 3;
@@ -83,12 +86,10 @@ namespace StudySync.Pages
             if (lp != null)
             {
                 // Determine dominant VARK
-                VarkStyle = lp.VarkVisual >= lp.VarkAuditory &&
-                            lp.VarkVisual >= lp.VarkKinesthetic &&
-                            lp.VarkVisual >= lp.VarkReadWrite ? "Visual" :
-                            lp.VarkAuditory >= lp.VarkKinesthetic &&
-                            lp.VarkAuditory >= lp.VarkReadWrite ? "Auditory" :
-                            lp.VarkKinesthetic >= lp.VarkReadWrite ? "Kinesthetic" : "ReadWrite";
+                VarkVisual = lp?.VarkVisual ?? 0;
+                VarkAuditory = lp?.VarkAuditory ?? 0;
+                VarkKinesthetic = lp?.VarkKinesthetic ?? 0;
+                VarkReadWrite = lp?.VarkReadWrite ?? 0;
 
                 StudyPace = lp.StudyPace;
                 CollaborationMode = lp.CollaborationMode;
@@ -190,11 +191,10 @@ namespace StudySync.Pages
 
             var profile = await _db.LearnerProfiles.FindAsync(userId);
             if (profile == null) return RedirectToPage("/Login");
-
-            profile.VarkVisual = VarkStyle == "Visual" ? 100 : 0;
-            profile.VarkAuditory = VarkStyle == "Auditory" ? 100 : 0;
-            profile.VarkKinesthetic = VarkStyle == "Kinesthetic" ? 100 : 0;
-            profile.VarkReadWrite = VarkStyle == "ReadWrite" ? 100 : 0;
+            profile.VarkVisual = decimal.Parse(Request.Form["VarkVisual"]) * 20;
+            profile.VarkAuditory = decimal.Parse(Request.Form["VarkAuditory"]) * 20;
+            profile.VarkKinesthetic = decimal.Parse(Request.Form["VarkKinesthetic"]) * 20;
+            profile.VarkReadWrite = decimal.Parse(Request.Form["VarkReadWrite"]) * 20;
             profile.StudyPace = short.Parse(StudyPace);
             profile.CollaborationMode = short.Parse(CollaborationMode);
             profile.InteractionType = short.Parse(InteractionType);

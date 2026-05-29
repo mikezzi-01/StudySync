@@ -65,6 +65,12 @@
                    class="nav-item @(activePage == "Analytics" ? "active" : "")">
                     <i class="fa-solid fa-chart-bar nav-icon"></i> ANALYTICS
                 </a>
+                @if (ViewData["IsAdmin"] as bool? == true)
+                {
+                    <a href="/Admin/AdminDashboard" class="nav-item-sm">
+                        <i class="fa-solid fa-shield-halved"></i> ADMIN
+                    </a>
+                }
             </nav>
 
             <div class="sidebar-bottom">
