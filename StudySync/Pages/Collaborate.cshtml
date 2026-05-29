@@ -62,9 +62,6 @@
                     </div>
                 </div>
                 <div class="chat-header-actions">
-                    <button class="icon-btn" title="Voice call">
-                        <i class="fa-solid fa-phone"></i>
-                    </button>
                     <a href="/Feedback/@Model.PartnershipId"
                         class="icon-btn" title="Leave feedback">
                         <i class="fa-solid fa-star"></i>
@@ -402,6 +399,11 @@
             if (bytes < 1024)    return bytes + ' B';
             if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        function toggleNewSession() {
+            const form = document.getElementById('newSessionForm');
+            form.classList.toggle('hidden');
         }
     </script>
 }

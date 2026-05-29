@@ -6,6 +6,10 @@
     font-family: Arial, sans-serif;
 }
 
+.main-content {
+    padding: 0;
+}
+
 /* ── Three column layout override ── */
 /* ── Override layout main-content for collaborate page ── */
 .collab-layout-override {
@@ -13,9 +17,9 @@
     justify-self: center;
     width: 100%;
 /*    grid-template-columns: 280px 1fr;*/
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
-    margin: -1.5rem -2rem -2rem;
+    margin-top: -1.5rem;
 }
 
 /* ── Error state ── */
@@ -277,6 +281,7 @@
 
 /* ── Messages area ── */
 .messages-area {
+    background: var(--cream);
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
