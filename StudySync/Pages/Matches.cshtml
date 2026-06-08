@@ -226,10 +226,22 @@
 			}
 		}
 
+		// filter button toggle
+		const filterBtn = document.querySelector('.filter-btn');
+		const filterGroups = document.querySelector('.filter-groups');
+		if (filterBtn && filterGroups) {
+			filterBtn.addEventListener('click', () => {
+				filterGroups.classList.toggle('filter-show');
+				filterBtn.querySelector('i').classList.toggle('fa-angle-down');
+				filterBtn.querySelector('i').classList.toggle('fa-angle-up');
+			});
+		}
+
 		// ── Filter cards ─────────────────────────────────────────────────────
 		function filterCards() {
 			const minScore      = parseInt(document.getElementById('scoreSlider').value);
-			const searchText    = document.getElementById('searchInput').value.toLowerCase();
+			const searchEl   = document.getElementById('globalSearchInput');
+			const searchText = searchEl ? searchEl.value.toLowerCase() : '';
 			const checkedLevels = [...document.querySelectorAll('.level-check:checked')].map(c => c.value);
 			const checkedInts   = [...document.querySelectorAll('.interest-check:checked')].map(c => c.value);
 
@@ -241,7 +253,7 @@
 
 				const passScore   = score >= minScore;
 				const passSearch  = name.includes(searchText);
-				const passLevel   = checkedLevels.includes(level);
+				const passLevel = checkedLevels.length === 0 || checkedLevels.includes(level);
 				const passInterest= checkedInts.length === 0 ||
 									checkedInts.some(i => interests.includes(i));
 
@@ -305,21 +317,9 @@
 		}
 
 		function handleSearch(query) {
-			const q = query.toLowerCase();
 			document.querySelectorAll('.match-list-card').forEach(card => {
 				const name = card.dataset.name?.toLowerCase() || '';
-				card.style.display = name.includes(q) ? '' : 'none';
-			});
-		}
-
-		// filter button toggle
-		const filterBtn = document.querySelector('.filter-btn');
-		const filterGroups = document.querySelector('.filter-groups');
-		if (filterBtn && filterGroups) {
-			filterBtn.addEventListener('click', () => {
-				filterGroups.classList.toggle('filter-show');
-				filterBtn.querySelector('i').classList.toggle('fa-angle-down');
-				filterBtn.querySelector('i').classList.toggle('fa-angle-up');
+				card.style.display = name.includes(query.toLowerCase()) ? '' : 'none';
 			});
 		}
 	</script>
