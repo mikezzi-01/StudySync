@@ -205,6 +205,10 @@ body {
     border-bottom: 1px solid var(--border);
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 500;
 }
 
 .search-bar {
